@@ -1,5 +1,6 @@
 {
-  "name": "platform-math",
+  "name": "graphmath",
+  "description": "Math for computer graphics",
   "version": "0.1.0",
   "dependencies": [],
   "features": {
