@@ -1,5 +1,13 @@
 {
   "name": "platform-math",
   "version": "0.1.0",
-  "dependencies": []
+  "dependencies": [],
+  "features": {
+    "test": {
+      "description": "Enable Testing",
+      "dependencies": [
+        "gtest"
+      ]
+    }
+  }
 }

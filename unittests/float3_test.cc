@@ -1,8 +1,8 @@
-#include "cs419/math/float3.h"
+#include "graphmath/float3.h"
 
 #include "gtest/gtest.h"
 
-using namespace cs419::math;
+using namespace graphmath;
 
 TEST(Float3, Constructor) {
   float3 zeros;

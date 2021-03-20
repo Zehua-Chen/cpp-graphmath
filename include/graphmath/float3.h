@@ -7,15 +7,13 @@
 #pragma once
 #include <cmath>
 
-#include "cs419/platform/platform.h"
-
 #ifdef __APPLE__
 #include <simd/simd.h>
 #endif
 
 // Declarations
 
-namespace cs419::math {
+namespace graphmath {
 struct float3;
 
 /// @brief Take `sqrt` of all values of a `float3`
@@ -41,7 +39,7 @@ float3 cross(const float3 &a, const float3 &b);
 float3 clamp(const float3 &value, const float3 &low, const float3 &high);
 
 /// @brief three `float32` numbers `(x, y, z)`
-struct CS419_API float3 final {
+struct float3 final {
  public:
   /// @brief create a `float3` of zeroes
   float3();
@@ -131,7 +129,7 @@ struct CS419_API float3 final {
 
 // Implementations
 
-namespace cs419::math {
+namespace graphmath {
 inline float3 sqrt(const float3 &f3) {
 #ifdef __APPLE__
   return simd::sqrt(f3.values_);

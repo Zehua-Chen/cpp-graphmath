@@ -1,4 +1,4 @@
 #pragma once
 
-#include "cs419/math/float3.h"
-#include "cs419/math/float4.h"
+#include "graphmath/float3.h"
+#include "graphmath/float4.h"

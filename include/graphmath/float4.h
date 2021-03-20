@@ -7,8 +7,6 @@
 #pragma once
 #include <cmath>
 
-#include "cs419/platform/platform.h"
-
 #if defined(__APPLE__)
 #include <simd/simd.h>
 #elif defined(_WIN32)
@@ -17,7 +15,7 @@
 
 // Declarations
 
-namespace cs419::math {
+namespace graphmath {
 struct float4;
 
 /// @brief Compute the dot product of two `float4`
@@ -27,7 +25,7 @@ struct float4;
 float4 dot(const float4 &a, const float4 &b);
 
 /// @brief four `float32` numbers `(x, y, z, w)`
-struct CS419_API float4 final {
+struct float4 final {
  public:
   /// @brief create a `float4` of zeroes
   float4();
@@ -112,7 +110,7 @@ struct CS419_API float4 final {
 
 // Implementations
 
-namespace cs419::math {
+namespace graphmath {
 inline float4 dot(const float4 &a, const float4 &b) {
 #if defined(__APPLE__)
   return float4{simd::dot(a.values_, b.values_)};
