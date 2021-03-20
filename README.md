@@ -1,6 +1,18 @@
 # Math for Computer Graphics
 
+All operations are delegated to the platform native math library
+
+- Apple Platforms: `simd`
+- Windows: `DirectXMath`
+
+APIs are modeled after the math functions in Metal, HLSL, GLSL
+
 ## Consumption
+
+- **Platform**
+  - Apple Platforms
+  - Windows
+  - **Linux is not supported**
 
 ### Vcpkg
 
