@@ -24,6 +24,11 @@ struct float4;
 /// @returns the result `float4`
 float4 dot(const float4 &a, const float4 &b);
 
+/// @brief Get a normalized version of `float4`
+/// @param f4 the `float4` to normalize
+/// @returns the normalized `float4`
+float4 normalize(const float4 &f4);
+
 /// @brief four `float32` numbers `(x, y, z, w)`
 struct float4 final {
  public:
@@ -97,7 +102,8 @@ struct float4 final {
   /// @returns the result
   float4 operator*(const float4 &rhs) const;
 
-  friend float4 dot(const float4 &a, const float4 &b);
+  friend float4 dot(const float4 &, const float4 &);
+  friend float4 normalize(const float4 &);
 
  private:
 #if defined(__APPLE__)
@@ -106,7 +112,7 @@ struct float4 final {
   DirectX::XMVECTOR values_;
 #endif
 };
-}  // namespace cs419::math
+}  // namespace graphmath
 
 // Implementations
 
@@ -116,6 +122,14 @@ inline float4 dot(const float4 &a, const float4 &b) {
   return float4{simd::dot(a.values_, b.values_)};
 #elif defined(_WIN32)
   return float4{DirectX::XMVector4Dot(a.values_, b.values_)};
+#endif
+}
+
+inline float4 normalize(const float4 &f4) {
+#if defined(__APPLE__)
+  return float4{simd::normalize(f4.values_)};
+#elif
+  return float4{DirectX::XMVector4Normalize(f4.values_)};
 #endif
 }
 
@@ -186,14 +200,6 @@ inline float float4::magnitude() const {
 #endif
 }
 
-inline float4 float4::normalized() const {
-#if defined(__APPLE__)
-  return float4{simd::normalize(values_)};
-#elif
-  return float4{DirectX::XMVector4Normalize(values_)};
-#endif
-}
-
 inline float4 float4::operator+(const float4 &other) const {
 #if defined(__APPLE__) || defined(_WIN32)
   return float4{values_ + other.values_};
@@ -217,4 +223,4 @@ inline float4 float4::operator*(const float4 &rhs) const {
   return float4{values_ * rhs.values_};
 #endif
 }
-}  // namespace cs419::math
+}  // namespace graphmath

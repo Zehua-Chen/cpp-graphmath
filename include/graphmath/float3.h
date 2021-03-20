@@ -113,11 +113,10 @@ struct float3 final {
 
   bool operator==(const float3 &rhs) const;
 
-  friend float3 sqrt(const float3 &f3);
-  friend float dot(const float3 &a, const float3 &b);
-  friend float3 cross(const float3 &a, const float3 &b);
-  friend float3 clamp(const float3 &value, const float3 &low,
-                      const float3 &high);
+  friend float3 sqrt(const float3 &);
+  friend float dot(const float3 &, const float3 &);
+  friend float3 cross(const float3 &, const float3 &);
+  friend float3 clamp(const float3 &, const float3 &, const float3 &);
 
  private:
 #ifdef __APPLE__
@@ -125,7 +124,7 @@ struct float3 final {
 #endif
 };
 
-}  // namespace cs419::math
+}  // namespace graphmath
 
 // Implementations
 
@@ -242,4 +241,4 @@ inline float3 float3::operator-(const float3 &rhs) const {
 inline bool float3::operator==(const float3 &rhs) const {
   return x() == rhs.x() && y() == rhs.y() && z() == rhs.z();
 }
-}  // namespace cs419::math
+}  // namespace graphmath

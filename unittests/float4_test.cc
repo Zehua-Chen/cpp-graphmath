@@ -25,7 +25,7 @@ TEST(Float4, Magnitude) {
 
 TEST(Float4, Normalized) {
   float4 f4{1, 1, 1, 1};
-  float4 normalized = f4.normalized();
+  float4 normalized = normalize(f4);
 
   ASSERT_FLOAT_EQ(normalized.x(), 0.4999999702f);
   ASSERT_FLOAT_EQ(normalized.y(), 0.4999999702f);
