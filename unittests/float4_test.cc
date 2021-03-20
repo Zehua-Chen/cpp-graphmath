@@ -20,7 +20,7 @@ TEST(Float4, Constructor) {
 
 TEST(Float4, Magnitude) {
   float4 f4{1, 2, 3, 4};
-  ASSERT_FLOAT_EQ(f4.magnitude(), 5.4772258f);
+  ASSERT_FLOAT_EQ(length(f4), 5.4772258f);
 }
 
 TEST(Float4, Normalized) {

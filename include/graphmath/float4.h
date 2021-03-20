@@ -29,6 +29,11 @@ float4 dot(const float4 &a, const float4 &b);
 /// @returns the normalized `float4`
 float4 normalize(const float4 &f4);
 
+/// @brief Get the magnitude of `float4`
+/// @param f4 the `float4`
+/// @returns the magnitude
+float length(const float4 &f4);
+
 /// @brief four `float32` numbers `(x, y, z, w)`
 struct float4 final {
  public:
@@ -75,13 +80,6 @@ struct float4 final {
   /// @returns the `w` value of `float4`
   float w() const;
 
-  /// @brief Get the magnitude of `float4`
-  float magnitude() const;
-
-  /// @brief Get a normalized version of `float4`
-  /// @returns the normalized `float4`
-  float4 normalized() const;
-
   /// @brief Add `a` and `b`
   /// @param other `b`
   /// @returns the result
@@ -104,6 +102,8 @@ struct float4 final {
 
   friend float4 dot(const float4 &, const float4 &);
   friend float4 normalize(const float4 &);
+
+  friend float length(const float4 &);
 
  private:
 #if defined(__APPLE__)
@@ -130,6 +130,12 @@ inline float4 normalize(const float4 &f4) {
   return float4{simd::normalize(f4.values_)};
 #elif
   return float4{DirectX::XMVector4Normalize(f4.values_)};
+#endif
+}
+
+inline float length(const float4 &f4) {
+#if defined(__APPLE__)
+  return simd::length(f4.values_);
 #endif
 }
 
@@ -185,18 +191,6 @@ inline float float4::w() const {
   return values_.w;
 #elif defined(_WIN32)
   return DirectX::XMVectorGetW(values_);
-#endif
-}
-
-inline float float4::magnitude() const {
-#if defined(__APPLE__)
-  simd::float4 squared = values_ * values_;
-  return std::sqrt(squared.x + squared.y + squared.z + squared.w);
-#elif defined(_WIN32)
-  using namespace DirectX;
-
-  XMVECTOR length = XMVector4Length(values_);
-  return XMVectorGetX(length);
 #endif
 }
 
