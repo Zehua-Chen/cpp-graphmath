@@ -1,14 +1,10 @@
-option(GRAPHMATH_DEV "Development" OFF)
-
-if(GRAPHMATH_DEV)
-  list(APPEND VCPKG_MANIFEST_FEATURES test)
-endif()
+option(GRAPHMATH_TEST "Development" OFF)
 
 project("GraphMath")
 
 include(cmake/AddGraphMathTest.cmake)
 
-if(GRAPHMATH_DEV)
+if(GRAPHMATH_TEST)
   find_package(GTest REQUIRED)
 
   enable_testing()
@@ -29,6 +25,6 @@ target_sources(
     "${CMAKE_SOURCE_DIR}/include/graphmath/float4.h")
 
 
-if(GRAPHMATH_DEV)
+if(GRAPHMATH_TEST)
   add_subdirectory(unittests)
 endif()
