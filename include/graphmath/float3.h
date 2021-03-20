@@ -20,11 +20,10 @@ struct float3;
 /// @param f3 the `float3`
 float3 sqrt(const float3 &f3);
 
-/// @brief Compute the dot product of two `float3`
-/// @param a one `float3`
-/// @param b one `float3`
-/// @returns the resulting number`
-float dot(const float3 &a, const float3 &b);
+/// @brief Get a normalized version of `float3`
+/// @param f3 the `float3` to normalize
+/// @returns the normalized `float3`
+float3 normalize(const float3 &f3);
 
 /// @brief Compute the cross product of two `float3`
 /// @param a one `float3`
@@ -36,7 +35,19 @@ float3 cross(const float3 &a, const float3 &b);
 /// @param value the value to clamp
 /// @param low the low bound (inclusive)
 /// @param high the high bound (inclusive)
+/// @returns the clammped float3
 float3 clamp(const float3 &value, const float3 &low, const float3 &high);
+
+/// @brief Compute the dot product of two `float3`
+/// @param a one `float3`
+/// @param b one `float3`
+/// @returns the resulting number`
+float dot(const float3 &a, const float3 &b);
+
+/// @brief Get the length of a `float3`
+/// @param f3 the float 3
+/// @returns the length
+float length(const float3 &f3);
 
 /// @brief three `float32` numbers `(x, y, z)`
 struct float3 final {
@@ -74,13 +85,6 @@ struct float3 final {
   /// @returns the `z` value of `float3`
   float z() const;
 
-  /// @brief Get the magnitude of `float3`
-  float magnitude() const;
-
-  /// @brief Get a normalized version of `float3`
-  /// @returns the normalized float3
-  float3 normalized() const;
-
   /// @brief Multiply all values of `float3` by a multiplier
   /// @param multiplier the multiplier
   /// @returns the multiplied `float3`
@@ -114,9 +118,12 @@ struct float3 final {
   bool operator==(const float3 &rhs) const;
 
   friend float3 sqrt(const float3 &);
-  friend float dot(const float3 &, const float3 &);
+  friend float3 normalize(const float3 &);
   friend float3 cross(const float3 &, const float3 &);
   friend float3 clamp(const float3 &, const float3 &, const float3 &);
+
+  friend float dot(const float3 &, const float3 &);
+  friend float length(const float3 &);
 
  private:
 #ifdef __APPLE__
@@ -135,9 +142,9 @@ inline float3 sqrt(const float3 &f3) {
 #endif
 }
 
-inline float dot(const float3 &a, const float3 &b) {
-#ifdef __APPLE__
-  return simd::dot(a.values_, b.values_);
+inline float3 normalize(const float3 &f3) {
+#if defined(__APPLE__)
+  return float3{simd::normalize(f3.values_)};
 #endif
 }
 
@@ -151,6 +158,18 @@ inline float3 clamp(const float3 &value, const float3 &low,
                     const float3 &high) {
 #if defined(__APPLE__)
   return simd::clamp(value.values_, low.values_, high.values_);
+#endif
+}
+
+inline float dot(const float3 &a, const float3 &b) {
+#ifdef __APPLE__
+  return simd::dot(a.values_, b.values_);
+#endif
+}
+
+inline float length(const float3 &f3) {
+#if defined(__APPLE__)
+  return simd::length(f3.values_);
 #endif
 }
 
@@ -186,19 +205,6 @@ inline float float3::y() const {
 inline float float3::z() const {
 #ifdef __APPLE__
   return values_.z;
-#endif
-}
-
-inline float float3::magnitude() const {
-#ifdef __APPLE__
-  simd::float3 squared = values_ * values_;
-  return std::sqrt(squared.x + squared.y + squared.z);
-#endif
-}
-
-inline float3 float3::normalized() const {
-#ifdef __APPLE__
-  return float3{simd::normalize(values_)};
 #endif
 }
 

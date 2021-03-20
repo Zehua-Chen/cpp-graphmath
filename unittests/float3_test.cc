@@ -19,12 +19,12 @@ TEST(Float3, Constructor) {
 
 TEST(Float3, Magnitude) {
   float3 f3{1, 1, 1};
-  ASSERT_FLOAT_EQ(f3.magnitude(), 1.7320508f);
+  ASSERT_FLOAT_EQ(length(f3), 1.7320508f);
 }
 
 TEST(Float3, Normalized) {
   float3 f3{1, 1, 1};
-  float3 normalized = f3.normalized();
+  float3 normalized = normalize(f3);
 
   ASSERT_FLOAT_EQ(normalized.x(), 0.57735026f);
   ASSERT_FLOAT_EQ(normalized.y(), 0.57735026f);
