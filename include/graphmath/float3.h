@@ -17,7 +17,7 @@
 // Declarations
 
 namespace graphmath {
-struct float3;
+class float3;
 
 /// @brief Take `sqrt` of all values of a `float3`
 /// @param f3 the `float3`
@@ -53,8 +53,16 @@ float dot(const float3 &a, const float3 &b);
 float length(const float3 &f3);
 
 /// @brief three `float32` numbers `(x, y, z)`
-struct float3 final {
+class float3 final {
  public:
+  /// @brief the native `float3` type
+  /// `simd::float3` on Apple Platform
+#if defined(__APPLE__)
+  using native_float3 = simd::float3;
+#else
+  using native_float3 = void;
+#endif
+
   /// @brief create a `float3` of zeroes
   float3();
 
@@ -68,13 +76,10 @@ struct float3 final {
   /// @param other another `float3`
   float3(const float3 &other);
 
-#ifdef __APPLE__
-  /// @brief create a `float3` with `simd::float3`
+  /// @brief create a `float3` with `native_float3`
   ///
-  /// Only available on Apple platforms
-  /// @param values a `simd::float3` instance
-  float3(simd::float3 values);
-#endif
+  /// @param native the native `float3` instance
+  float3(const native_float3 &native);
 
   /// @brief Get `x` of `float3`
   /// @returns the `x` value of `float3`
@@ -129,9 +134,7 @@ struct float3 final {
   friend float length(const float3 &);
 
  private:
-#ifdef __APPLE__
-  simd::float3 values_;
-#endif
+  native_float3 values_;
 };
 
 }  // namespace graphmath
@@ -188,27 +191,44 @@ inline float length(const float3 &f3) {
 #endif
 }
 
+inline float3::float3()
 #if defined(__APPLE__)
-inline float3::float3() : values_{simd::make_float3(0, 0, 0)} {}
+    : values_{simd::make_float3(0, 0, 0)} {
+}
 #else
-inline float3::float3() { throw_not_implemented(); }
+{
+  throw_not_implemented();
+}
 #endif
 
-#if defined(__APPLE__)
 inline float3::float3(float x, float y, float z)
-    : values_{simd::make_float3(x, y, z)} {}
-#else
-inline float3::float3(float x, float y, float z) { throw_not_implemented(); }
-#endif
-
 #if defined(__APPLE__)
-inline float3::float3(const float3 &other) : values_(other.values_) {}
+    : values_{simd::make_float3(x, y, z)} {
+}
 #else
-inline float3::float3(const float3 &other) { throw_not_implemented(); }
+{
+  throw_not_implemented();
+}
 #endif
 
-#ifdef __APPLE__
-inline float3::float3(simd::float3 values) : values_(values) {}
+inline float3::float3(const float3 &other)
+#if defined(__APPLE__)
+    : values_(other.values_) {
+}
+#else
+{
+  throw_not_implemented();
+}
+#endif
+
+inline float3::float3(const native_float3 &values)
+#if defined(__APPLE__) || defined(_WIN32)
+    : values_(values) {
+}
+#else
+{
+  throw_not_implemented();
+}
 #endif
 
 inline float float3::x() const {

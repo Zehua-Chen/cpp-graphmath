@@ -19,7 +19,7 @@
 // Declarations
 
 namespace graphmath {
-struct float4;
+class float4;
 
 /// @brief Compute the dot product of two `float4`
 /// @param a one `float4`
@@ -38,10 +38,21 @@ float4 normalize(const float4 &f4);
 float length(const float4 &f4);
 
 /// @brief four `float32` numbers `(x, y, z, w)`
-struct float4 final {
+class float4 final {
  public:
+  /// @brief the native `float3` type
+  /// `simd::float3` on Apple Platform, `DirectX::XMVECTOR` on Windows
+#if defined(__APPLE__)
+  using native_float4 = simd::float4;
+#elif defined(_WIN32)
+  using native_float4 = DirectX::XMVECTOR;
+#else
+  using native_float4 = void;
+#endif
+
   /// @brief create a `float4` of zeroes
   float4();
+
   /// @brief create a `float4` with values
   /// @param x x
   /// @param y y
@@ -53,19 +64,10 @@ struct float4 final {
   /// @param other another `float4`
   float4(const float4 &other);
 
-#if defined(__APPLE__)
-  /// @brief create a `float4` with `simd::float4`
+  /// @brief create a `float4` with a `native_float4`
   ///
-  /// Only available on Apple platforms
-  /// @param values a `simd::float4` instance
-  float4(simd::float4 values);
-#elif defined(_WIN32)
-  /// @brief create a `float4` with `DirectX::XMVECTOR`
-  ///
-  /// Only available on Microsoft platforms
-  /// @param values a `DirectX::XMVECTOR` instance
-  float4(DirectX::XMVECTOR values);
-#endif
+  /// @param values the native `float4` instance
+  float4(const native_float4 &values);
 
   /// @brief Get `x` of `float4`
   /// @returns the `x` value of `float4`
@@ -109,11 +111,7 @@ struct float4 final {
   friend float length(const float4 &);
 
  private:
-#if defined(__APPLE__)
-  simd::float4 values_;
-#elif defined(_WIN32)
-  DirectX::XMVECTOR values_;
-#endif
+  native_float4 values_;
 };
 }  // namespace graphmath
 
@@ -176,11 +174,7 @@ inline float4::float4(float x, float y, float z, float w)
 
 inline float4::float4(const float4 &other) : values_(other.values_) {}
 
-#if defined(__APPLE__)
-inline float4::float4(simd::float4 values) : values_(values) {}
-#elif defined(_WIN32)
-inline float4::float4(DirectX::XMVECTOR values) : values_(values) {}
-#endif
+inline float4::float4(const native_float4 &values) : values_(values) {}
 
 inline float float4::x() const {
 #if defined(__APPLE__)
