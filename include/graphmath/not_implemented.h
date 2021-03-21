@@ -17,7 +17,7 @@ void throw_not_implemented();
 // Implementations
 
 namespace graphmath {
-const char *not_implemented::what() const noexcept {
+inline const char *not_implemented::what() const noexcept {
   return "graphmath: not implemented";
 }
 

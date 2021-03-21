@@ -5,7 +5,10 @@
 //  Created by Zehua Chen on 2/21/21.
 //
 #pragma once
+
 #include <cmath>
+
+#include "graphmath/not_implemented.h"
 
 #if defined(__APPLE__)
 #include <simd/simd.h>
@@ -122,6 +125,8 @@ inline float4 dot(const float4 &a, const float4 &b) {
   return float4{simd::dot(a.values_, b.values_)};
 #elif defined(_WIN32)
   return float4{DirectX::XMVector4Dot(a.values_, b.values_)};
+#else
+  throw_not_implemented();
 #endif
 }
 
@@ -130,19 +135,30 @@ inline float4 normalize(const float4 &f4) {
   return float4{simd::normalize(f4.values_)};
 #elif
   return float4{DirectX::XMVector4Normalize(f4.values_)};
+#else
+  throw_not_implemented();
 #endif
 }
 
 inline float length(const float4 &f4) {
 #if defined(__APPLE__)
   return simd::length(f4.values_);
+#else
+  throw_not_implemented();
 #endif
 }
 
+inline float4::float4()
 #if defined(__APPLE__)
-inline float4::float4() : values_{simd::make_float4(0, 0, 0, 0)} {}
+    : values_{simd::make_float4(0, 0, 0, 0)} {
+}
 #elif defined(_WIN32)
-inline float4::float4() : values_{DirectX::XMVectorZero()} {}
+    : values_{DirectX::XMVectorZero()} {
+}
+#else
+{
+  throw_not_implemented();
+}
 #endif
 
 inline float4::float4(float x, float y, float z, float w)
@@ -151,6 +167,10 @@ inline float4::float4(float x, float y, float z, float w)
 }
 #elif defined(_WIN32)
     : values_{DirectX::XMVectorSet(x, y, z, w)} {
+}
+#else
+{
+  throw_not_implemented();
 }
 #endif
 
@@ -167,6 +187,8 @@ inline float float4::x() const {
   return values_.x;
 #elif defined(_WIN32)
   return DirectX::XMVectorGetX(values_);
+#else
+  throw_not_implemented();
 #endif
 }
 
@@ -175,6 +197,8 @@ inline float float4::y() const {
   return values_.y;
 #elif defined(_WIN32)
   return DirectX::XMVectorGetY(values_);
+#else
+  throw_not_implemented();
 #endif
 }
 
@@ -183,6 +207,8 @@ inline float float4::z() const {
   return values_.z;
 #elif defined(_WIN32)
   return DirectX::XMVectorGetZ(values_);
+#else
+  throw_not_implemented();
 #endif
 }
 
@@ -191,30 +217,40 @@ inline float float4::w() const {
   return values_.w;
 #elif defined(_WIN32)
   return DirectX::XMVectorGetW(values_);
+#else
+  throw_not_implemented();
 #endif
 }
 
 inline float4 float4::operator+(const float4 &other) const {
 #if defined(__APPLE__) || defined(_WIN32)
   return float4{values_ + other.values_};
+#else
+  throw_not_implemented();
 #endif
 }
 
 inline float4 float4::operator-(const float4 &rhs) const {
 #if defined(__APPLE__) || defined(_WIN32)
   return float4{values_ - rhs.values_};
+#else
+  throw_not_implemented();
 #endif
 }
 
 inline float4 float4::operator*(float multiplier) const {
 #if defined(__APPLE__) || defined(_WIN32)
   return values_ * multiplier;
+#else
+  throw_not_implemented();
 #endif
 }
 
 inline float4 float4::operator*(const float4 &rhs) const {
 #if defined(__APPLE__) || defined(_WIN32)
   return float4{values_ * rhs.values_};
+#else
+  throw_not_implemented();
 #endif
 }
 }  // namespace graphmath
