@@ -5,7 +5,10 @@
 //  Created by Zehua Chen on 2/21/21.
 //
 #pragma once
+
 #include <cmath>
+
+#include "graphmath/not_implemented.h"
 
 #ifdef __APPLE__
 #include <simd/simd.h>
@@ -137,20 +140,26 @@ struct float3 final {
 
 namespace graphmath {
 inline float3 sqrt(const float3 &f3) {
-#ifdef __APPLE__
+#if defined(__APPLE__)
   return simd::sqrt(f3.values_);
+#else
+  throw_not_implemented();
 #endif
 }
 
 inline float3 normalize(const float3 &f3) {
 #if defined(__APPLE__)
   return float3{simd::normalize(f3.values_)};
+#else
+  throw_not_implemented();
 #endif
 }
 
 inline float3 cross(const float3 &a, const float3 &b) {
-#ifdef __APPLE__
+#if defined(__APPLE__)
   return float3{simd::cross(a.values_, b.values_)};
+#else
+  throw_not_implemented();
 #endif
 }
 
@@ -158,32 +167,44 @@ inline float3 clamp(const float3 &value, const float3 &low,
                     const float3 &high) {
 #if defined(__APPLE__)
   return simd::clamp(value.values_, low.values_, high.values_);
+#else
+  throw_not_implemented();
 #endif
 }
 
 inline float dot(const float3 &a, const float3 &b) {
-#ifdef __APPLE__
+#if defined(__APPLE__)
   return simd::dot(a.values_, b.values_);
+#else
+  throw_not_implemented();
 #endif
 }
 
 inline float length(const float3 &f3) {
 #if defined(__APPLE__)
   return simd::length(f3.values_);
+#else
+  throw_not_implemented();
 #endif
 }
 
-#ifdef __APPLE__
+#if defined(__APPLE__)
 inline float3::float3() : values_{simd::make_float3(0, 0, 0)} {}
+#else
+inline float3::float3() { throw_not_implemented(); }
 #endif
 
-#ifdef __APPLE__
+#if defined(__APPLE__)
 inline float3::float3(float x, float y, float z)
     : values_{simd::make_float3(x, y, z)} {}
+#else
+inline float3::float3(float x, float y, float z) { throw_not_implemented(); }
 #endif
 
-#ifdef __APPLE__
+#if defined(__APPLE__)
 inline float3::float3(const float3 &other) : values_(other.values_) {}
+#else
+inline float3::float3(const float3 &other) { throw_not_implemented(); }
 #endif
 
 #ifdef __APPLE__
@@ -191,56 +212,74 @@ inline float3::float3(simd::float3 values) : values_(values) {}
 #endif
 
 inline float float3::x() const {
-#ifdef __APPLE__
+#if defined(__APPLE__)
   return values_.x;
+#else
+  throw_not_implemented();
 #endif
 }
 
 inline float float3::y() const {
-#ifdef __APPLE__
+#if defined(__APPLE__)
   return values_.y;
+#else
+  throw_not_implemented();
 #endif
 }
 
 inline float float3::z() const {
-#ifdef __APPLE__
+#if defined(__APPLE__)
   return values_.z;
+#else
+  throw_not_implemented();
 #endif
 }
 
 inline float3 float3::operator*(float multiplier) const {
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(_WIN32)
   return values_ * multiplier;
+#else
+  throw_not_implemented();
 #endif
 }
 
 inline float3 float3::operator*(const float3 &rhs) const {
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(_WIN32)
   return values_ * rhs.values_;
+#else
+  throw_not_implemented();
 #endif
 }
 
 inline float3 float3::operator/(float multiplier) const {
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(_WIN32)
   return values_ / multiplier;
+#else
+  throw_not_implemented();
 #endif
 }
 
 inline float3 float3::operator+(const float3 &rhs) const {
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(_WIN32)
   return values_ + rhs.values_;
+#else
+  throw_not_implemented();
 #endif
 }
 
 inline float3 float3::operator-(float rhs) const {
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(_WIN32)
   return values_ - rhs;
+#else
+  throw_not_implemented();
 #endif
 }
 
 inline float3 float3::operator-(const float3 &rhs) const {
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(_WIN32)
   return values_ - rhs.values_;
+#else
+  throw_not_implemented();
 #endif
 }
 

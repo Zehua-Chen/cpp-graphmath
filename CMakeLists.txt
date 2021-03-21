@@ -21,6 +21,7 @@ target_sources(
   graphmath
   PRIVATE
     "${CMAKE_SOURCE_DIR}/include/graphmath/graphmath.h"
+    "${CMAKE_SOURCE_DIR}/include/graphmath/not_implemented.h"
     "${CMAKE_SOURCE_DIR}/include/graphmath/float3.h"
     "${CMAKE_SOURCE_DIR}/include/graphmath/float4.h")
 
