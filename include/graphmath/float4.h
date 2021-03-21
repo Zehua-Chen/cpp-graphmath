@@ -19,7 +19,7 @@
 // Declarations
 
 namespace graphmath {
-class float4;
+struct float4;
 
 /// @brief Compute the dot product of two `float4`
 /// @param a one `float4`
@@ -38,7 +38,7 @@ float4 normalize(const float4 &f4);
 float length(const float4 &f4);
 
 /// @brief four `float32` numbers `(x, y, z, w)`
-class float4 final {
+struct float4 final {
  public:
   /// @brief the native `float3` type
   /// `simd::float3` on Apple Platform, `DirectX::XMVECTOR` on Windows
@@ -105,13 +105,7 @@ class float4 final {
   /// @returns the result
   float4 operator*(const float4 &rhs) const;
 
-  friend float4 dot(const float4 &, const float4 &);
-  friend float4 normalize(const float4 &);
-
-  friend float length(const float4 &);
-
- private:
-  native_float4 values_;
+  native_float4 native;
 };
 }  // namespace graphmath
 
@@ -120,9 +114,9 @@ class float4 final {
 namespace graphmath {
 inline float4 dot(const float4 &a, const float4 &b) {
 #if defined(__APPLE__)
-  return float4{simd::dot(a.values_, b.values_)};
+  return float4{simd::dot(a.native, b.native)};
 #elif defined(_WIN32)
-  return float4{DirectX::XMVector4Dot(a.values_, b.values_)};
+  return float4{DirectX::XMVector4Dot(a.native, b.native)};
 #else
   throw_not_implemented();
 #endif
@@ -130,9 +124,9 @@ inline float4 dot(const float4 &a, const float4 &b) {
 
 inline float4 normalize(const float4 &f4) {
 #if defined(__APPLE__)
-  return float4{simd::normalize(f4.values_)};
+  return float4{simd::normalize(f4.native)};
 #elif
-  return float4{DirectX::XMVector4Normalize(f4.values_)};
+  return float4{DirectX::XMVector4Normalize(f4.native)};
 #else
   throw_not_implemented();
 #endif
@@ -140,7 +134,7 @@ inline float4 normalize(const float4 &f4) {
 
 inline float length(const float4 &f4) {
 #if defined(__APPLE__)
-  return simd::length(f4.values_);
+  return simd::length(f4.native);
 #else
   throw_not_implemented();
 #endif
@@ -148,10 +142,10 @@ inline float length(const float4 &f4) {
 
 inline float4::float4()
 #if defined(__APPLE__)
-    : values_{simd::make_float4(0, 0, 0, 0)} {
+    : native{simd::make_float4(0, 0, 0, 0)} {
 }
 #elif defined(_WIN32)
-    : values_{DirectX::XMVectorZero()} {
+    : native{DirectX::XMVectorZero()} {
 }
 #else
 {
@@ -161,10 +155,10 @@ inline float4::float4()
 
 inline float4::float4(float x, float y, float z, float w)
 #if defined(__APPLE__)
-    : values_{simd::make_float4(x, y, z, w)} {
+    : native{simd::make_float4(x, y, z, w)} {
 }
 #elif defined(_WIN32)
-    : values_{DirectX::XMVectorSet(x, y, z, w)} {
+    : native{DirectX::XMVectorSet(x, y, z, w)} {
 }
 #else
 {
@@ -172,15 +166,15 @@ inline float4::float4(float x, float y, float z, float w)
 }
 #endif
 
-inline float4::float4(const float4 &other) : values_(other.values_) {}
+inline float4::float4(const float4 &other) : native(other.native) {}
 
-inline float4::float4(const native_float4 &values) : values_(values) {}
+inline float4::float4(const native_float4 &values) : native(values) {}
 
 inline float float4::x() const {
 #if defined(__APPLE__)
-  return values_.x;
+  return native.x;
 #elif defined(_WIN32)
-  return DirectX::XMVectorGetX(values_);
+  return DirectX::XMVectorGetX(native);
 #else
   throw_not_implemented();
 #endif
@@ -188,9 +182,9 @@ inline float float4::x() const {
 
 inline float float4::y() const {
 #if defined(__APPLE__)
-  return values_.y;
+  return native.y;
 #elif defined(_WIN32)
-  return DirectX::XMVectorGetY(values_);
+  return DirectX::XMVectorGetY(native);
 #else
   throw_not_implemented();
 #endif
@@ -198,9 +192,9 @@ inline float float4::y() const {
 
 inline float float4::z() const {
 #if defined(__APPLE__)
-  return values_.z;
+  return native.z;
 #elif defined(_WIN32)
-  return DirectX::XMVectorGetZ(values_);
+  return DirectX::XMVectorGetZ(native);
 #else
   throw_not_implemented();
 #endif
@@ -208,9 +202,9 @@ inline float float4::z() const {
 
 inline float float4::w() const {
 #if defined(__APPLE__)
-  return values_.w;
+  return native.w;
 #elif defined(_WIN32)
-  return DirectX::XMVectorGetW(values_);
+  return DirectX::XMVectorGetW(native);
 #else
   throw_not_implemented();
 #endif
@@ -218,7 +212,7 @@ inline float float4::w() const {
 
 inline float4 float4::operator+(const float4 &other) const {
 #if defined(__APPLE__) || defined(_WIN32)
-  return float4{values_ + other.values_};
+  return float4{native + other.native};
 #else
   throw_not_implemented();
 #endif
@@ -226,7 +220,7 @@ inline float4 float4::operator+(const float4 &other) const {
 
 inline float4 float4::operator-(const float4 &rhs) const {
 #if defined(__APPLE__) || defined(_WIN32)
-  return float4{values_ - rhs.values_};
+  return float4{native - rhs.native};
 #else
   throw_not_implemented();
 #endif
@@ -234,7 +228,7 @@ inline float4 float4::operator-(const float4 &rhs) const {
 
 inline float4 float4::operator*(float multiplier) const {
 #if defined(__APPLE__) || defined(_WIN32)
-  return values_ * multiplier;
+  return native * multiplier;
 #else
   throw_not_implemented();
 #endif
@@ -242,7 +236,7 @@ inline float4 float4::operator*(float multiplier) const {
 
 inline float4 float4::operator*(const float4 &rhs) const {
 #if defined(__APPLE__) || defined(_WIN32)
-  return float4{values_ * rhs.values_};
+  return float4{native * rhs.native};
 #else
   throw_not_implemented();
 #endif

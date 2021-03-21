@@ -17,7 +17,7 @@
 // Declarations
 
 namespace graphmath {
-class float3;
+struct float3;
 
 /// @brief Take `sqrt` of all values of a `float3`
 /// @param f3 the `float3`
@@ -53,7 +53,7 @@ float dot(const float3 &a, const float3 &b);
 float length(const float3 &f3);
 
 /// @brief three `float32` numbers `(x, y, z)`
-class float3 final {
+struct float3 final {
  public:
   /// @brief the native `float3` type
   /// `simd::float3` on Apple Platform
@@ -125,16 +125,7 @@ class float3 final {
 
   bool operator==(const float3 &rhs) const;
 
-  friend float3 sqrt(const float3 &);
-  friend float3 normalize(const float3 &);
-  friend float3 cross(const float3 &, const float3 &);
-  friend float3 clamp(const float3 &, const float3 &, const float3 &);
-
-  friend float dot(const float3 &, const float3 &);
-  friend float length(const float3 &);
-
- private:
-  native_float3 values_;
+  native_float3 native;
 };
 
 }  // namespace graphmath
@@ -144,7 +135,7 @@ class float3 final {
 namespace graphmath {
 inline float3 sqrt(const float3 &f3) {
 #if defined(__APPLE__)
-  return simd::sqrt(f3.values_);
+  return simd::sqrt(f3.native);
 #else
   throw_not_implemented();
 #endif
@@ -152,7 +143,7 @@ inline float3 sqrt(const float3 &f3) {
 
 inline float3 normalize(const float3 &f3) {
 #if defined(__APPLE__)
-  return float3{simd::normalize(f3.values_)};
+  return float3{simd::normalize(f3.native)};
 #else
   throw_not_implemented();
 #endif
@@ -160,7 +151,7 @@ inline float3 normalize(const float3 &f3) {
 
 inline float3 cross(const float3 &a, const float3 &b) {
 #if defined(__APPLE__)
-  return float3{simd::cross(a.values_, b.values_)};
+  return float3{simd::cross(a.native, b.native)};
 #else
   throw_not_implemented();
 #endif
@@ -169,7 +160,7 @@ inline float3 cross(const float3 &a, const float3 &b) {
 inline float3 clamp(const float3 &value, const float3 &low,
                     const float3 &high) {
 #if defined(__APPLE__)
-  return simd::clamp(value.values_, low.values_, high.values_);
+  return simd::clamp(value.native, low.native, high.native);
 #else
   throw_not_implemented();
 #endif
@@ -177,7 +168,7 @@ inline float3 clamp(const float3 &value, const float3 &low,
 
 inline float dot(const float3 &a, const float3 &b) {
 #if defined(__APPLE__)
-  return simd::dot(a.values_, b.values_);
+  return simd::dot(a.native, b.native);
 #else
   throw_not_implemented();
 #endif
@@ -185,7 +176,7 @@ inline float dot(const float3 &a, const float3 &b) {
 
 inline float length(const float3 &f3) {
 #if defined(__APPLE__)
-  return simd::length(f3.values_);
+  return simd::length(f3.native);
 #else
   throw_not_implemented();
 #endif
@@ -193,7 +184,7 @@ inline float length(const float3 &f3) {
 
 inline float3::float3()
 #if defined(__APPLE__)
-    : values_{simd::make_float3(0, 0, 0)} {
+    : native{simd::make_float3(0, 0, 0)} {
 }
 #else
 {
@@ -203,7 +194,7 @@ inline float3::float3()
 
 inline float3::float3(float x, float y, float z)
 #if defined(__APPLE__)
-    : values_{simd::make_float3(x, y, z)} {
+    : native{simd::make_float3(x, y, z)} {
 }
 #else
 {
@@ -213,7 +204,7 @@ inline float3::float3(float x, float y, float z)
 
 inline float3::float3(const float3 &other)
 #if defined(__APPLE__)
-    : values_(other.values_) {
+    : native(other.native) {
 }
 #else
 {
@@ -223,7 +214,7 @@ inline float3::float3(const float3 &other)
 
 inline float3::float3(const native_float3 &values)
 #if defined(__APPLE__) || defined(_WIN32)
-    : values_(values) {
+    : native(values) {
 }
 #else
 {
@@ -233,7 +224,7 @@ inline float3::float3(const native_float3 &values)
 
 inline float float3::x() const {
 #if defined(__APPLE__)
-  return values_.x;
+  return native.x;
 #else
   throw_not_implemented();
 #endif
@@ -241,7 +232,7 @@ inline float float3::x() const {
 
 inline float float3::y() const {
 #if defined(__APPLE__)
-  return values_.y;
+  return native.y;
 #else
   throw_not_implemented();
 #endif
@@ -249,7 +240,7 @@ inline float float3::y() const {
 
 inline float float3::z() const {
 #if defined(__APPLE__)
-  return values_.z;
+  return native.z;
 #else
   throw_not_implemented();
 #endif
@@ -257,7 +248,7 @@ inline float float3::z() const {
 
 inline float3 float3::operator*(float multiplier) const {
 #if defined(__APPLE__) || defined(_WIN32)
-  return values_ * multiplier;
+  return native * multiplier;
 #else
   throw_not_implemented();
 #endif
@@ -265,7 +256,7 @@ inline float3 float3::operator*(float multiplier) const {
 
 inline float3 float3::operator*(const float3 &rhs) const {
 #if defined(__APPLE__) || defined(_WIN32)
-  return values_ * rhs.values_;
+  return native * rhs.native;
 #else
   throw_not_implemented();
 #endif
@@ -273,7 +264,7 @@ inline float3 float3::operator*(const float3 &rhs) const {
 
 inline float3 float3::operator/(float multiplier) const {
 #if defined(__APPLE__) || defined(_WIN32)
-  return values_ / multiplier;
+  return native / multiplier;
 #else
   throw_not_implemented();
 #endif
@@ -281,7 +272,7 @@ inline float3 float3::operator/(float multiplier) const {
 
 inline float3 float3::operator+(const float3 &rhs) const {
 #if defined(__APPLE__) || defined(_WIN32)
-  return values_ + rhs.values_;
+  return native + rhs.native;
 #else
   throw_not_implemented();
 #endif
@@ -289,7 +280,7 @@ inline float3 float3::operator+(const float3 &rhs) const {
 
 inline float3 float3::operator-(float rhs) const {
 #if defined(__APPLE__) || defined(_WIN32)
-  return values_ - rhs;
+  return native - rhs;
 #else
   throw_not_implemented();
 #endif
@@ -297,7 +288,7 @@ inline float3 float3::operator-(float rhs) const {
 
 inline float3 float3::operator-(const float3 &rhs) const {
 #if defined(__APPLE__) || defined(_WIN32)
-  return values_ - rhs.values_;
+  return native - rhs.native;
 #else
   throw_not_implemented();
 #endif
