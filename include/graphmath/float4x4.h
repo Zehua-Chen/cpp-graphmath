@@ -10,6 +10,8 @@
 // Declarations
 
 namespace graphmath {
+struct float4x4;
+
 float4x4 transpose(const float4x4 &f4x4);
 
 struct float4x4 final {
@@ -19,6 +21,7 @@ struct float4x4 final {
 #endif
 
   float4x4(const native_float4x4 &native);
+  float4x4(float value);
   float4x4(const float4 &row0, const float4 &row1, const float4 &row2,
            const float4 &row3);
 
@@ -40,10 +43,19 @@ namespace graphmath {
 inline float4x4 transpose(const float4x4 &f4x4) {
 #if defined(__APPLE__)
   return float4x4{simd::transpose(f4x4.native)};
+#else
+  throw_not_implemented();
 #endif
 }
 
 inline float4x4::float4x4(const native_float4x4 &native) : native(native) {}
+
+inline float4x4::float4x4(float value) {
+  set(0, 0, value);
+  set(1, 1, value);
+  set(2, 2, value);
+  set(3, 3, value);
+}
 
 inline float4x4::float4x4(const float4 &row0, const float4 &row1,
                           const float4 &row2, const float4 &row3) {
