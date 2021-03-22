@@ -60,7 +60,7 @@ struct float3 final {
 #if defined(__APPLE__)
   using native_float3 = simd::float3;
 #else
-  using native_float3 = void;
+  using native_float3 = float[3];
 #endif
 
   /// @brief create a `float3` of zeroes

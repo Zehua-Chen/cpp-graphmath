@@ -47,7 +47,7 @@ struct float4 final {
 #elif defined(_WIN32)
   using native_float4 = DirectX::XMVECTOR;
 #else
-  using native_float4 = void;
+  using native_float4 = float[4];
 #endif
 
   /// @brief create a `float4` of zeroes
