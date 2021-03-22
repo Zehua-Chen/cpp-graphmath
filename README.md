@@ -2,10 +2,14 @@
 
 All operations are delegated to the platform native math library
 
-- Apple Platforms: `simd`
-- Windows: `DirectXMath`
+- [x] Apple Platforms: `simd`
+- [ ] Windows: `DirectXMath`
 
 APIs are modeled after the math functions in Metal, HLSL, GLSL
+
+- `graphmath::float3`
+- `graphmath::float4`
+- `graphmath::float4x4`
 
 ## Consumption
 
