@@ -12,26 +12,57 @@
 namespace graphmath {
 struct float4x4;
 
+/// @brief Transpose a `float4x4` matrix
+/// @param f4x4 the matrix to transpose
+/// @returns the transposed matrix
 float4x4 transpose(const float4x4 &f4x4);
 
+/// @brief a 4x4 matrix
 struct float4x4 final {
  public:
+  /// @brief The native `float4x4` type
 #if defined(__APPLE__)
   using native_float4x4 = simd::float4x4;
 #endif
 
+  /// @brief Create a `float4x4` matrix using a native matrix
+  /// @param native the native matrix
   float4x4(const native_float4x4 &native);
+
+  /// @brief Create a matrix with a single value along the diagonal
+  /// @param value the value to use
   float4x4(float value);
+
+  /// @brief Create a matrix from four rows
+  /// @param row0 row 0
+  /// @param row1 row 1
+  /// @param row2 row 2
+  /// @param row3 row 3
   float4x4(const float4 &row0, const float4 &row1, const float4 &row2,
            const float4 &row3);
 
+  /// @brief Get the value at `(row, column)`
+  /// @param row row
+  /// @param column column
+  /// @returns the value at `(row, column)`
   float get(size_t row, size_t column) const;
+
+  /// @brief Set the value at `(row, column)`
+  /// @param row row
+  /// @param column column
+  /// @param value the value at `(row, column)`
   void set(size_t row, size_t column, float value);
 
+  /// @brief Get the value at `(row, column)`
+  /// @param row row
+  /// @param column column
+  /// @returns the value at `(row, column)`
   float operator()(size_t row, size_t column) const;
-  float4 operator*(const float4 &other) const;
 
-  friend float4x4 transpose(const float4x4 &);
+  /// @brief Multiply a `float4x4` by a `float4`
+  /// @param f4 the `float4`
+  /// @returns the result of multiplication
+  float4 operator*(const float4 &f4) const;
 
   native_float4x4 native;
 };
@@ -95,7 +126,11 @@ inline float float4x4::operator()(size_t row, size_t column) const {
   return get(row, column);
 }
 
-inline float4 float4x4::operator*(const float4 &other) const {
-  return float4{native * other.native};
+inline float4 float4x4::operator*(const float4 &f4) const {
+#if defined(__APPLE__)
+  return float4{native * f4.native};
+#else
+  throw_not_implemented();
+#endif
 }
 }  // namespace graphmath
