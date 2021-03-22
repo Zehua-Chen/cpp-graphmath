@@ -51,3 +51,21 @@ TEST(Float4x4, Multiplication) {
   ASSERT_FLOAT_EQ(result.z(), 100);
   ASSERT_FLOAT_EQ(result.w(), 140);
 }
+
+TEST(Float4x4, Transpose) {
+  float4 rows[4];
+  float counter = 0.0f;
+
+  for (size_t row = 0; row < 4; row++) {
+    rows[row] = float4{counter++, counter++, counter++, counter++};
+  }
+
+  float4x4 matrix{rows[0], rows[1], rows[2], rows[3]};
+  float4x4 result = transpose(matrix);
+
+  for (size_t row = 0; row < 4; row++) {
+    for (size_t col = 0; col < 4; col++) {
+      ASSERT_FLOAT_EQ(result.get(row, col), matrix.get(col, row));
+    }
+  }
+}
