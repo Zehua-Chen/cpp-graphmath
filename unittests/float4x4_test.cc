@@ -6,7 +6,6 @@ using namespace graphmath;
 
 TEST(Float4x4, Construction) {
   float4 rows[4];
-
   float counter = 0.0f;
 
   for (size_t row = 0; row < 4; row++) {
@@ -33,4 +32,22 @@ TEST(Float4x4, Identity) {
   ASSERT_FLOAT_EQ(result.y(), 2);
   ASSERT_FLOAT_EQ(result.z(), 3);
   ASSERT_FLOAT_EQ(result.w(), 4);
+}
+
+TEST(Float4x4, Multiplication) {
+  float4 rows[4];
+  float counter = 0.0f;
+
+  for (size_t row = 0; row < 4; row++) {
+    rows[row] = float4{counter++, counter++, counter++, counter++};
+  }
+
+  float4x4 matrix{rows[0], rows[1], rows[2], rows[3]};
+  float4 f4{1, 2, 3, 4};
+  float4 result = matrix * f4;
+
+  ASSERT_FLOAT_EQ(result.x(), 20);
+  ASSERT_FLOAT_EQ(result.y(), 60);
+  ASSERT_FLOAT_EQ(result.z(), 100);
+  ASSERT_FLOAT_EQ(result.w(), 140);
 }
