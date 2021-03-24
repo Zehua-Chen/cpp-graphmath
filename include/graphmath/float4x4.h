@@ -73,10 +73,6 @@ struct float4x4 final {
 /// @param f4x4 the matrix to transpose
 /// @returns the transposed matrix
 float4x4 transpose(const float4x4 &f4x4);
-
-template <typename CharT>
-std::basic_ostream<CharT> &operator<<(std::basic_ostream<CharT> &out,
-                                      const float4x4 &f4x4);
 }  // namespace graphmath
 
 // Imlementations
@@ -151,30 +147,5 @@ inline float4x4 transpose(const float4x4 &f4x4) {
 #else
   throw_not_implemented();
 #endif
-}
-
-template <typename CharT>
-std::basic_ostream<CharT> &operator<<(std::basic_ostream<CharT> &out,
-                                      const float4x4 &f4x4) {
-  const CharT space = static_cast<CharT>(' ');
-  const auto print_line = [&](size_t y) {
-    out << f4x4.get(y, 0) << space;
-    out << f4x4.get(y, 1) << space;
-    out << f4x4.get(y, 2) << space;
-    out << f4x4.get(y, 3);
-  };
-
-  print_line(0);
-  out << std::endl;
-
-  print_line(1);
-  out << std::endl;
-
-  print_line(2);
-  out << std::endl;
-
-  print_line(3);
-
-  return out;
 }
 }  // namespace graphmath

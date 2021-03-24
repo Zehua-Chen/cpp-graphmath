@@ -19,24 +19,6 @@
 // Declarations
 
 namespace graphmath {
-struct float4;
-
-/// @brief Compute the dot product of two `float4`
-/// @param a one `float4`
-/// @param b one `float4`
-/// @returns the result `float4`
-float4 dot(const float4 &a, const float4 &b);
-
-/// @brief Get a normalized version of `float4`
-/// @param f4 the `float4` to normalize
-/// @returns the normalized `float4`
-float4 normalize(const float4 &f4);
-
-/// @brief Get the magnitude of `float4`
-/// @param f4 the `float4`
-/// @returns the magnitude
-float length(const float4 &f4);
-
 /// @brief four `float32` numbers `(x, y, z, w)`
 struct float4 final {
  public:
@@ -107,39 +89,29 @@ struct float4 final {
 
   native_float4 native;
 };
+
+/// @brief Compute the dot product of two `float4`
+/// @param a one `float4`
+/// @param b one `float4`
+/// @returns the result `float4`
+float4 dot(const float4 &a, const float4 &b);
+
+/// @brief Get a normalized version of `float4`
+/// @param f4 the `float4` to normalize
+/// @returns the normalized `float4`
+float4 normalize(const float4 &f4);
+
+/// @brief Get the magnitude of `float4`
+/// @param f4 the `float4`
+/// @returns the magnitude
+float length(const float4 &f4);
+
+
 }  // namespace graphmath
 
 // Implementations
 
 namespace graphmath {
-inline float4 dot(const float4 &a, const float4 &b) {
-#if defined(__APPLE__)
-  return float4{simd::dot(a.native, b.native)};
-#elif defined(_WIN32)
-  return float4{DirectX::XMVector4Dot(a.native, b.native)};
-#else
-  throw_not_implemented();
-#endif
-}
-
-inline float4 normalize(const float4 &f4) {
-#if defined(__APPLE__)
-  return float4{simd::normalize(f4.native)};
-#elif
-  return float4{DirectX::XMVector4Normalize(f4.native)};
-#else
-  throw_not_implemented();
-#endif
-}
-
-inline float length(const float4 &f4) {
-#if defined(__APPLE__)
-  return simd::length(f4.native);
-#else
-  throw_not_implemented();
-#endif
-}
-
 inline float4::float4()
 #if defined(__APPLE__)
     : native{simd::make_float4(0, 0, 0, 0)} {
@@ -237,6 +209,34 @@ inline float4 float4::operator*(float multiplier) const {
 inline float4 float4::operator*(const float4 &rhs) const {
 #if defined(__APPLE__) || defined(_WIN32)
   return float4{native * rhs.native};
+#else
+  throw_not_implemented();
+#endif
+}
+
+inline float4 dot(const float4 &a, const float4 &b) {
+#if defined(__APPLE__)
+  return float4{simd::dot(a.native, b.native)};
+#elif defined(_WIN32)
+  return float4{DirectX::XMVector4Dot(a.native, b.native)};
+#else
+  throw_not_implemented();
+#endif
+}
+
+inline float4 normalize(const float4 &f4) {
+#if defined(__APPLE__)
+  return float4{simd::normalize(f4.native)};
+#elif
+  return float4{DirectX::XMVector4Normalize(f4.native)};
+#else
+  throw_not_implemented();
+#endif
+}
+
+inline float length(const float4 &f4) {
+#if defined(__APPLE__)
+  return simd::length(f4.native);
 #else
   throw_not_implemented();
 #endif
