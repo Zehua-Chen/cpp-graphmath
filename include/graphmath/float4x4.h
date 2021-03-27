@@ -7,6 +7,8 @@
 
 #if defined(__APPLE__)
 #include <simd/simd.h>
+#else
+#include <array>
 #endif
 
 // Declarations
@@ -19,7 +21,7 @@ struct float4x4 final {
 #if defined(__APPLE__)
   using native_float4x4 = simd::float4x4;
 #else
-  using native_float4x4 = float[16];
+  using native_float4x4 = std::array<float, 16>;
 #endif
 
   /// @brief Create a `float4x4` matrix using a native matrix
