@@ -1,7 +1,5 @@
 #pragma once
 
-#include <ostream>
-
 #include "graphmath/float4.h"
 #include "graphmath/not_implemented.h"
 
@@ -20,6 +18,8 @@ struct float4x4 final {
   /// @brief The native `float4x4` type
 #if defined(__APPLE__)
   using native_float4x4 = simd::float4x4;
+#elif defined(_WIN32)
+  using native_float4x4 = DirectX::XMMATRIX;
 #else
   using native_float4x4 = std::array<float, 16>;
 #endif
@@ -59,14 +59,14 @@ struct float4x4 final {
   float operator()(size_t y, size_t x) const;
 
   /// @brief Multiply a `float4x4` by a `float4`
-  /// @param f4 the `float4`
+  /// @param rhs the `float4`
   /// @returns the result of multiplication
-  float4 operator*(const float4 &f4) const;
+  float4 operator*(const float4 &rhs) const;
 
   /// @brief Multiply a `float4x4` by a `float4x4`
-  /// @param f4x4 the `float4x4`
+  /// @param rhs the `float4x4`
   /// @returns the result of multiplication
-  float4x4 operator*(const float4x4 &f4x4) const;
+  float4x4 operator*(const float4x4 &rhs) const;
 
   native_float4x4 native;
 };
@@ -101,7 +101,11 @@ inline float4x4::float4x4(const float4 &row0, const float4 &row1,
   native.columns[1] = col1;
   native.columns[2] = col2;
   native.columns[3] = col3;
-
+#elif defined(_WIN32)
+  native = DirectX::XMMatrixSet(row0.x(), row0.y(), row0.z(), row0.w(),
+                                row1.x(), row1.y(), row1.z(), row1.w(),
+                                row2.x(), row2.y(), row2.z(), row2.w(),
+                                row3.x(), row3.y(), row3.z(), row3.w());
 #else
   throw_not_implemented();
 #endif
@@ -110,6 +114,8 @@ inline float4x4::float4x4(const float4 &row0, const float4 &row1,
 inline float float4x4::get(size_t y, size_t x) const {
 #if defined(__APPLE__)
   return native.columns[x][y];
+#elif defined(_WIN32)
+  return native(y, x);
 #else
   throw_not_implemented();
 #endif
@@ -118,6 +124,8 @@ inline float float4x4::get(size_t y, size_t x) const {
 inline void float4x4::set(size_t y, size_t x, float value) {
 #if defined(__APPLE__)
   native.columns[x][y] = value;
+#elif defined(_WIN32)
+  native(y, x) = value;
 #else
   throw_not_implemented();
 #endif
@@ -127,17 +135,21 @@ inline float float4x4::operator()(size_t y, size_t x) const {
   return get(y, x);
 }
 
-inline float4 float4x4::operator*(const float4 &f4) const {
+inline float4 float4x4::operator*(const float4 &rhs) const {
 #if defined(__APPLE__)
-  return float4{native * f4.native};
+  return float4{native * rhs.native};
+#elif defined(_WIN32)
+  return float4{DirectX::XMVector4Transform(rhs.native, native)};
 #else
   throw_not_implemented();
 #endif
 }
 
-inline float4x4 float4x4::operator*(const float4x4 &f4x4) const {
+inline float4x4 float4x4::operator*(const float4x4 &rhs) const {
 #if defined(__APPLE__)
-  return float4x4{native * f4x4.native};
+  return float4x4{native * rhs.native};
+#elif defined(_WIN32)
+  return float4x4{DirectX::XMMatrixMultiply(native, rhs.native)};
 #else
   throw_not_implemented();
 #endif
@@ -146,6 +158,8 @@ inline float4x4 float4x4::operator*(const float4x4 &f4x4) const {
 inline float4x4 transpose(const float4x4 &f4x4) {
 #if defined(__APPLE__)
   return float4x4{simd::transpose(f4x4.native)};
+#elif defined(_WIN32)
+  return float4x4{DirectX::XMMatrixTranspose(f4x4.native)};
 #else
   throw_not_implemented();
 #endif
