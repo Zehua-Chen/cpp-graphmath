@@ -59,6 +59,8 @@ struct float3 final {
   /// `simd::float3` on Apple Platform
 #if defined(__APPLE__)
   using native_float3 = simd::float3;
+#elif defined(_WIN32)
+  using native_float4 = DirectX::XMVECTOR;
 #else
   using native_float3 = std::array<float, 3>;
 #endif
@@ -93,6 +95,16 @@ struct float3 final {
   /// @returns the `z` value of `float3`
   float z() const;
 
+  /// @brief Add one `a` to `b` from another
+  /// @param rhs `b`
+  /// @returns the result
+  float3 operator+(const float3 &rhs) const;
+
+  /// @brief Subtract a value from all values of `float3`
+  /// @param rhs the value to subtract with
+  /// @returns the subtracted `float3`
+  float3 operator-(float rhs) const;
+
   /// @brief Multiply all values of `float3` by a multiplier
   /// @param multiplier the multiplier
   /// @returns the multiplied `float3`
@@ -107,16 +119,6 @@ struct float3 final {
   /// @param multiplier the divisor
   /// @returns the multiplied `float3`
   float3 operator/(float multiplier) const;
-
-  /// @brief Add one `a` to `b` from another
-  /// @param rhs `b`
-  /// @returns the result
-  float3 operator+(const float3 &rhs) const;
-
-  /// @brief Subtract a value from all values of `float3`
-  /// @param rhs the value to subtract with
-  /// @returns the subtracted `float3`
-  float3 operator-(float rhs) const;
 
   /// @brief Subtract one `a` from `b` from another
   /// @param rhs `b`
@@ -186,6 +188,9 @@ inline float3::float3()
 #if defined(__APPLE__)
     : native{simd::make_float3(0, 0, 0)} {
 }
+#elif defined(_WIN32)
+    : native{DirectX::XMVectorSet(0, 0, 0, 1)} {
+}
 #else
 {
   throw_not_implemented();
@@ -195,6 +200,9 @@ inline float3::float3()
 inline float3::float3(float x, float y, float z)
 #if defined(__APPLE__)
     : native{simd::make_float3(x, y, z)} {
+}
+#elif defined(_WIN32)
+    : native{DirectX::XMVectorSet(x, y, z, 1)} {
 }
 #else
 {
@@ -225,6 +233,8 @@ inline float3::float3(const native_float3 &values)
 inline float float3::x() const {
 #if defined(__APPLE__)
   return native.x;
+#elif defined(_WIN32)
+  return DirectX::XMVectorGetX(native);
 #else
   throw_not_implemented();
 #endif
@@ -233,6 +243,8 @@ inline float float3::x() const {
 inline float float3::y() const {
 #if defined(__APPLE__)
   return native.y;
+#elif defined(_WIN32)
+  return DirectX::XMVectorGetY(native);
 #else
   throw_not_implemented();
 #endif
@@ -241,6 +253,26 @@ inline float float3::y() const {
 inline float float3::z() const {
 #if defined(__APPLE__)
   return native.z;
+#elif defined(_WIN32)
+  return DirectX::XMVectorGetZ(native);
+#else
+  throw_not_implemented();
+#endif
+}
+
+inline float3 float3::operator+(const float3 &rhs) const {
+#if defined(__APPLE__)
+  return native + rhs.native;
+#elif defined(_WIN32)
+  return float4{DirectX::XMVectorAdd(native, rhs.native)};
+#else
+  throw_not_implemented();
+#endif
+}
+
+inline float3 float3::operator-(float rhs) const {
+#if defined(__APPLE__)
+  return native - rhs;
 #else
   throw_not_implemented();
 #endif
@@ -257,6 +289,8 @@ inline float3 float3::operator*(float multiplier) const {
 inline float3 float3::operator*(const float3 &rhs) const {
 #if defined(__APPLE__)
   return native * rhs.native;
+#elif defined(_WIN32)
+  return float4{DirectX::XMVectorMultiply(native, rhs.native)};
 #else
   throw_not_implemented();
 #endif
@@ -270,25 +304,11 @@ inline float3 float3::operator/(float multiplier) const {
 #endif
 }
 
-inline float3 float3::operator+(const float3 &rhs) const {
-#if defined(__APPLE__)
-  return native + rhs.native;
-#else
-  throw_not_implemented();
-#endif
-}
-
-inline float3 float3::operator-(float rhs) const {
-#if defined(__APPLE__)
-  return native - rhs;
-#else
-  throw_not_implemented();
-#endif
-}
-
 inline float3 float3::operator-(const float3 &rhs) const {
 #if defined(__APPLE__)
   return native - rhs.native;
+#elif defined(_WIN32)
+  return float4{DirectX::XMVectorSubtract(native, rhs.native)};
 #else
   throw_not_implemented();
 #endif

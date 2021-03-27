@@ -206,6 +206,11 @@ inline float4 float4::operator-(const float4 &rhs) const {
 inline float4 float4::operator*(float rhs) const {
 #if defined(__APPLE__)
   return native * rhs;
+#elif defined(_WIN32)
+  using namespace DirectX;
+
+  XMVECTOR rhs_vec = XMVectorSet(rhs, rhs, rhs, rhs);
+  return float4{XMVectorMultiply(native, rhs_vec)};
 #else
   throw_not_implemented();
 #endif
@@ -244,6 +249,8 @@ inline float4 normalize(const float4 &f4) {
 inline float length(const float4 &f4) {
 #if defined(__APPLE__)
   return simd::length(f4.native);
+#elif defined(_WIN32)
+  return DirectX::XMVector4Length(f4.native);
 #else
   throw_not_implemented();
 #endif
