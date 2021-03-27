@@ -10,6 +10,8 @@
 
 #if defined(__APPLE__)
 #include <simd/simd.h>
+#elif defined(_WIN32)
+#include <DirectXMath.h>
 #else
 #include <array>
 #endif
@@ -60,7 +62,7 @@ struct float3 final {
 #if defined(__APPLE__)
   using native_float3 = simd::float3;
 #elif defined(_WIN32)
-  using native_float4 = DirectX::XMVECTOR;
+  using native_float3 = DirectX::XMVECTOR;
 #else
   using native_float3 = std::array<float, 3>;
 #endif
@@ -105,10 +107,15 @@ struct float3 final {
   /// @returns the subtracted `float3`
   float3 operator-(float rhs) const;
 
+  /// @brief Subtract one `a` from `b` from another
+  /// @param rhs `b`
+  /// @returns the result
+  float3 operator-(const float3 &rhs) const;
+
   /// @brief Multiply all values of `float3` by a multiplier
-  /// @param multiplier the multiplier
+  /// @param rhs the multiplier
   /// @returns the multiplied `float3`
-  float3 operator*(float multiplier) const;
+  float3 operator*(float rhs) const;
 
   /// @brief Component-wise multiply `a`, `b`
   /// @param rhs `b`
@@ -116,15 +123,13 @@ struct float3 final {
   float3 operator*(const float3 &rhs) const;
 
   /// @brief Divide all values of `float3` by a divisor
-  /// @param multiplier the divisor
+  /// @param rhs the divisor
   /// @returns the multiplied `float3`
-  float3 operator/(float multiplier) const;
+  float3 operator/(float rhs) const;
 
-  /// @brief Subtract one `a` from `b` from another
-  /// @param rhs `b`
-  /// @returns the result
-  float3 operator-(const float3 &rhs) const;
-
+  /// @brief Compare `this` with another `float3`
+  /// @param rhs the other `float3`
+  /// @returns true if equal; false otherwise
   bool operator==(const float3 &rhs) const;
 
   native_float3 native;
@@ -179,6 +184,8 @@ inline float dot(const float3 &a, const float3 &b) {
 inline float length(const float3 &f3) {
 #if defined(__APPLE__)
   return simd::length(f3.native);
+#elif defined(_WIN32)
+  return DirectX::XMVector3Length(f3.native);
 #else
   throw_not_implemented();
 #endif
@@ -211,7 +218,7 @@ inline float3::float3(float x, float y, float z)
 #endif
 
 inline float3::float3(const float3 &other)
-#if defined(__APPLE__)
+#if defined(__APPLE__) || defined(_WIN32)
     : native(other.native) {
 }
 #else
@@ -237,6 +244,8 @@ inline float float3::x() const {
   return DirectX::XMVectorGetX(native);
 #else
   throw_not_implemented();
+
+  return -1.0f;
 #endif
 }
 
@@ -247,6 +256,8 @@ inline float float3::y() const {
   return DirectX::XMVectorGetY(native);
 #else
   throw_not_implemented();
+
+  return -1.0f;
 #endif
 }
 
@@ -257,6 +268,8 @@ inline float float3::z() const {
   return DirectX::XMVectorGetZ(native);
 #else
   throw_not_implemented();
+
+  return -1.0f
 #endif
 }
 
@@ -264,43 +277,26 @@ inline float3 float3::operator+(const float3 &rhs) const {
 #if defined(__APPLE__)
   return native + rhs.native;
 #elif defined(_WIN32)
-  return float4{DirectX::XMVectorAdd(native, rhs.native)};
+  return float3{DirectX::XMVectorAdd(native, rhs.native)};
 #else
   throw_not_implemented();
+
+  return float3{};
 #endif
 }
 
 inline float3 float3::operator-(float rhs) const {
 #if defined(__APPLE__)
   return native - rhs;
-#else
-  throw_not_implemented();
-#endif
-}
-
-inline float3 float3::operator*(float multiplier) const {
-#if defined(__APPLE__)
-  return native * multiplier;
-#else
-  throw_not_implemented();
-#endif
-}
-
-inline float3 float3::operator*(const float3 &rhs) const {
-#if defined(__APPLE__)
-  return native * rhs.native;
 #elif defined(_WIN32)
-  return float4{DirectX::XMVectorMultiply(native, rhs.native)};
-#else
-  throw_not_implemented();
-#endif
-}
+  using namespace DirectX;
 
-inline float3 float3::operator/(float multiplier) const {
-#if defined(__APPLE__)
-  return native / multiplier;
+  XMVECTOR rhs_vec = XMVectorSet(rhs, rhs, rhs, 0.0f);
+  return float3{XMVectorSubtract(native, rhs_vec)};
 #else
   throw_not_implemented();
+
+  return float3{};
 #endif
 }
 
@@ -308,9 +304,48 @@ inline float3 float3::operator-(const float3 &rhs) const {
 #if defined(__APPLE__)
   return native - rhs.native;
 #elif defined(_WIN32)
-  return float4{DirectX::XMVectorSubtract(native, rhs.native)};
+  return float3{DirectX::XMVectorSubtract(native, rhs.native)};
 #else
   throw_not_implemented();
+
+  return float3{};
+#endif
+}
+
+inline float3 float3::operator*(float rhs) const {
+#if defined(__APPLE__)
+  return native * rhs;
+#elif defined(_WIN32)
+  using namespace DirectX;
+
+  XMVECTOR rhs_vec = XMVectorSet(rhs, rhs, rhs, 1.0f);
+  return float3{XMVectorMultiply(native, rhs_vec)};
+#else
+  throw_not_implemented();
+
+  return float3{};
+#endif
+}
+
+inline float3 float3::operator*(const float3 &rhs) const {
+#if defined(__APPLE__)
+  return native * rhs.native;
+#elif defined(_WIN32)
+  return float3{DirectX::XMVectorMultiply(native, rhs.native)};
+#else
+  throw_not_implemented();
+
+  return float3{};
+#endif
+}
+
+inline float3 float3::operator/(float rhs) const {
+#if defined(__APPLE__)
+  return native / rhs;
+#else
+  throw_not_implemented();
+
+  return float3{};
 #endif
 }
 
