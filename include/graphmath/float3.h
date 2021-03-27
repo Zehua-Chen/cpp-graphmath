@@ -19,41 +19,6 @@
 // Declarations
 
 namespace graphmath {
-struct float3;
-
-/// @brief Take `sqrt` of all values of a `float3`
-/// @param f3 the `float3`
-float3 sqrt(const float3 &f3);
-
-/// @brief Get a normalized version of `float3`
-/// @param f3 the `float3` to normalize
-/// @returns the normalized `float3`
-float3 normalize(const float3 &f3);
-
-/// @brief Compute the cross product of two `float3`
-/// @param a one `float3`
-/// @param b one `float3`
-/// @returns the result `float3`
-float3 cross(const float3 &a, const float3 &b);
-
-/// @brief clamp a float to a low and high bound
-/// @param value the value to clamp
-/// @param low the low bound (inclusive)
-/// @param high the high bound (inclusive)
-/// @returns the clammped float3
-float3 clamp(const float3 &value, const float3 &low, const float3 &high);
-
-/// @brief Compute the dot product of two `float3`
-/// @param a one `float3`
-/// @param b one `float3`
-/// @returns the resulting number`
-float dot(const float3 &a, const float3 &b);
-
-/// @brief Get the length of a `float3`
-/// @param f3 the float 3
-/// @returns the length
-float length(const float3 &f3);
-
 /// @brief three `float32` numbers `(x, y, z)`
 struct float3 final {
  public:
@@ -135,62 +100,43 @@ struct float3 final {
   native_float3 native;
 };
 
+/// @brief Take `sqrt` of all values of a `float3`
+/// @param f3 the `float3`
+float3 sqrt(const float3 &f3);
+
+/// @brief Get a normalized version of `float3`
+/// @param f3 the `float3` to normalize
+/// @returns the normalized `float3`
+float3 normalize(const float3 &f3);
+
+/// @brief Compute the cross product of two `float3`
+/// @param a one `float3`
+/// @param b one `float3`
+/// @returns the result `float3`
+float3 cross(const float3 &a, const float3 &b);
+
+/// @brief clamp a float to a low and high bound
+/// @param value the value to clamp
+/// @param low the low bound (inclusive)
+/// @param high the high bound (inclusive)
+/// @returns the clammped float3
+float3 clamp(const float3 &value, const float3 &low, const float3 &high);
+
+/// @brief Compute the dot product of two `float3`
+/// @param a one `float3`
+/// @param b one `float3`
+/// @returns the resulting number`
+float dot(const float3 &a, const float3 &b);
+
+/// @brief Get the length of a `float3`
+/// @param f3 the float 3
+/// @returns the length
+float length(const float3 &f3);
 }  // namespace graphmath
 
 // Implementations
 
 namespace graphmath {
-inline float3 sqrt(const float3 &f3) {
-#if defined(__APPLE__)
-  return simd::sqrt(f3.native);
-#else
-  throw_not_implemented();
-#endif
-}
-
-inline float3 normalize(const float3 &f3) {
-#if defined(__APPLE__)
-  return float3{simd::normalize(f3.native)};
-#else
-  throw_not_implemented();
-#endif
-}
-
-inline float3 cross(const float3 &a, const float3 &b) {
-#if defined(__APPLE__)
-  return float3{simd::cross(a.native, b.native)};
-#else
-  throw_not_implemented();
-#endif
-}
-
-inline float3 clamp(const float3 &value, const float3 &low,
-                    const float3 &high) {
-#if defined(__APPLE__)
-  return simd::clamp(value.native, low.native, high.native);
-#else
-  throw_not_implemented();
-#endif
-}
-
-inline float dot(const float3 &a, const float3 &b) {
-#if defined(__APPLE__)
-  return simd::dot(a.native, b.native);
-#else
-  throw_not_implemented();
-#endif
-}
-
-inline float length(const float3 &f3) {
-#if defined(__APPLE__)
-  return simd::length(f3.native);
-#elif defined(_WIN32)
-  return DirectX::XMVector3Length(f3.native);
-#else
-  throw_not_implemented();
-#endif
-}
-
 inline float3::float3()
 #if defined(__APPLE__)
     : native{simd::make_float3(0, 0, 0)} {
@@ -351,5 +297,58 @@ inline float3 float3::operator/(float rhs) const {
 
 inline bool float3::operator==(const float3 &rhs) const {
   return x() == rhs.x() && y() == rhs.y() && z() == rhs.z();
+}
+
+inline float3 sqrt(const float3 &f3) {
+#if defined(__APPLE__)
+  return simd::sqrt(f3.native);
+#else
+  throw_not_implemented();
+#endif
+}
+
+inline float3 normalize(const float3 &f3) {
+#if defined(__APPLE__)
+  return float3{simd::normalize(f3.native)};
+#else
+  throw_not_implemented();
+#endif
+}
+
+inline float3 cross(const float3 &a, const float3 &b) {
+#if defined(__APPLE__)
+  return float3{simd::cross(a.native, b.native)};
+#else
+  throw_not_implemented();
+#endif
+}
+
+inline float3 clamp(const float3 &value, const float3 &low,
+                    const float3 &high) {
+#if defined(__APPLE__)
+  return simd::clamp(value.native, low.native, high.native);
+#else
+  throw_not_implemented();
+#endif
+}
+
+inline float dot(const float3 &a, const float3 &b) {
+#if defined(__APPLE__)
+  return simd::dot(a.native, b.native);
+#else
+  throw_not_implemented();
+#endif
+}
+
+inline float length(const float3 &f3) {
+#if defined(__APPLE__)
+  return simd::length(f3.native);
+#elif defined(_WIN32)
+  using namespace DirectX;
+
+  return XMVectorGetX(XMVector3Length(f3.native));
+#else
+  throw_not_implemented();
+#endif
 }
 }  // namespace graphmath

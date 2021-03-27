@@ -250,7 +250,9 @@ inline float length(const float4 &f4) {
 #if defined(__APPLE__)
   return simd::length(f4.native);
 #elif defined(_WIN32)
-  return DirectX::XMVector4Length(f4.native);
+  using namespace DirectX;
+
+  return XMVectorGetX(XMVector4Length(f4.native));
 #else
   throw_not_implemented();
 #endif
