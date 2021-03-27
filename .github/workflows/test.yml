@@ -41,7 +41,7 @@ jobs:
         -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake \
         -DGRAPHMATH_TEST=1 \
         -DVCPKG_MANIFEST_FEATURES=test \
-        $GITHUB_WORKSPACE
+        -S $GITHUB_WORKSPACE
 
     - name: Build
       working-directory: ${{github.workspace}}/build
