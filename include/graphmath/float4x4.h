@@ -115,7 +115,12 @@ inline float float4x4::get(size_t y, size_t x) const {
 #if defined(__APPLE__)
   return native.columns[x][y];
 #elif defined(_WIN32)
-  return native(y, x);
+  using namespace DirectX;
+
+  XMFLOAT4X4 dump;
+
+  XMStoreFloat4x4(&dump, native);
+  return dump.m[y][x];
 #else
   throw_not_implemented();
 #endif
@@ -125,7 +130,14 @@ inline void float4x4::set(size_t y, size_t x, float value) {
 #if defined(__APPLE__)
   native.columns[x][y] = value;
 #elif defined(_WIN32)
-  native(y, x) = value;
+  using namespace DirectX;
+
+  XMFLOAT4X4 dump;
+
+  XMStoreFloat4x4(&dump, native);
+  dump.m[y][x] = value;
+
+  native = XMLoadFloat4x4(&dump);
 #else
   throw_not_implemented();
 #endif

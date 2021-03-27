@@ -320,7 +320,7 @@ inline float3 normalize(const float3 &f3) {
 #elif defined(_WIN32)
   using namespace DirectX;
 
-  return XMVectorGetX(XMVector3Normalize(f3.native));
+  return XMVector3Normalize(f3.native);
 #else
   throw_not_implemented();
 
