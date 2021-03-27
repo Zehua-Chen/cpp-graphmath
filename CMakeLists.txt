@@ -8,6 +8,8 @@ if(GRAPHMATH_TEST)
   find_package(GTest REQUIRED)
 
   enable_testing()
+else()
+  message("${GRAPHMATH_TEST}")
 endif()
 
 add_library(graphmath INTERFACE)
