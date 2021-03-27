@@ -288,6 +288,11 @@ inline float3 float3::operator*(const float3 &rhs) const {
 inline float3 float3::operator/(float rhs) const {
 #if defined(__APPLE__)
   return native / rhs;
+#elif defined(_WIN32)
+  using namespace DirectX;
+
+  XMVECTOR rhs_vec = XMVectorSet(rhs, rhs, rhs, 1.0f);
+  return float3{XMVectorDivide(native, rhs_vec)};
 #else
   throw_not_implemented();
 
@@ -304,14 +309,22 @@ inline float3 sqrt(const float3 &f3) {
   return simd::sqrt(f3.native);
 #else
   throw_not_implemented();
+
+  return float3{};
 #endif
 }
 
 inline float3 normalize(const float3 &f3) {
 #if defined(__APPLE__)
   return float3{simd::normalize(f3.native)};
+#elif defined(_WIN32)
+  using namespace DirectX;
+
+  return XMVectorGetX(XMVector3Normalize(f3.native));
 #else
   throw_not_implemented();
+
+  return float3{};
 #endif
 }
 
@@ -329,6 +342,8 @@ inline float3 clamp(const float3 &value, const float3 &low,
   return simd::clamp(value.native, low.native, high.native);
 #else
   throw_not_implemented();
+
+  return float3{};
 #endif
 }
 
@@ -337,6 +352,8 @@ inline float dot(const float3 &a, const float3 &b) {
   return simd::dot(a.native, b.native);
 #else
   throw_not_implemented();
+
+  return -1.0f;
 #endif
 }
 
@@ -349,6 +366,8 @@ inline float length(const float3 &f3) {
   return XMVectorGetX(XMVector3Length(f3.native));
 #else
   throw_not_implemented();
+
+  return -1.0f;
 #endif
 }
 }  // namespace graphmath
