@@ -184,23 +184,27 @@ inline float float4::w() const {
 }
 
 inline float4 float4::operator+(const float4 &other) const {
-#if defined(__APPLE__) || defined(_WIN32)
+#if defined(__APPLE__)
   return float4{native + other.native};
+#elif defined(_WIN32)
+  return float4{DirectX::XMVectorAdd(native, other.native)};
 #else
   throw_not_implemented();
 #endif
 }
 
 inline float4 float4::operator-(const float4 &rhs) const {
-#if defined(__APPLE__) || defined(_WIN32)
+#if defined(__APPLE__)
   return float4{native - rhs.native};
+#elif defined(_WIN32)
+  return float4{DirectX::XMVectorSubtract(native, other.native)};
 #else
   throw_not_implemented();
 #endif
 }
 
 inline float4 float4::operator*(float multiplier) const {
-#if defined(__APPLE__) || defined(_WIN32)
+#if defined(__APPLE__)
   return native * multiplier;
 #else
   throw_not_implemented();
@@ -208,8 +212,10 @@ inline float4 float4::operator*(float multiplier) const {
 }
 
 inline float4 float4::operator*(const float4 &rhs) const {
-#if defined(__APPLE__) || defined(_WIN32)
+#if defined(__APPLE__)
   return float4{native * rhs.native};
+#elif defined(_WIN32)
+  return float4{DirectX::XMVectorMultiply(native, other.native)};
 #else
   throw_not_implemented();
 #endif
