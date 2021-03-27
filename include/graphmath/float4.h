@@ -70,9 +70,9 @@ struct float4 final {
   float w() const;
 
   /// @brief Add `a` and `b`
-  /// @param other `b`
+  /// @param rhs `b`
   /// @returns the result
-  float4 operator+(const float4 &other) const;
+  float4 operator+(const float4 &rhs) const;
 
   /// @brief `a - b`
   /// @param rhs `b`
@@ -80,9 +80,9 @@ struct float4 final {
   float4 operator-(const float4 &rhs) const;
 
   /// @brief Multiply all values of `float4` by a multiplier
-  /// @param multiplier the multiplier
+  /// @param rhs the multiplier
   /// @returns the multiplied `float4`
-  float4 operator*(float multiplier) const;
+  float4 operator*(float rhs) const;
 
   /// @brief Component wise multiply `a` and `b`
   /// @param rhs `b`
@@ -183,11 +183,11 @@ inline float float4::w() const {
 #endif
 }
 
-inline float4 float4::operator+(const float4 &other) const {
+inline float4 float4::operator+(const float4 &rhs) const {
 #if defined(__APPLE__)
-  return float4{native + other.native};
+  return float4{native + rhs.native};
 #elif defined(_WIN32)
-  return float4{DirectX::XMVectorAdd(native, other.native)};
+  return float4{DirectX::XMVectorAdd(native, rhs.native)};
 #else
   throw_not_implemented();
 #endif
@@ -197,15 +197,15 @@ inline float4 float4::operator-(const float4 &rhs) const {
 #if defined(__APPLE__)
   return float4{native - rhs.native};
 #elif defined(_WIN32)
-  return float4{DirectX::XMVectorSubtract(native, other.native)};
+  return float4{DirectX::XMVectorSubtract(native, rhs.native)};
 #else
   throw_not_implemented();
 #endif
 }
 
-inline float4 float4::operator*(float multiplier) const {
+inline float4 float4::operator*(float rhs) const {
 #if defined(__APPLE__)
-  return native * multiplier;
+  return native * rhs;
 #else
   throw_not_implemented();
 #endif
@@ -215,7 +215,7 @@ inline float4 float4::operator*(const float4 &rhs) const {
 #if defined(__APPLE__)
   return float4{native * rhs.native};
 #elif defined(_WIN32)
-  return float4{DirectX::XMVectorMultiply(native, other.native)};
+  return float4{DirectX::XMVectorMultiply(native, rhs.native)};
 #else
   throw_not_implemented();
 #endif
@@ -234,7 +234,7 @@ inline float4 dot(const float4 &a, const float4 &b) {
 inline float4 normalize(const float4 &f4) {
 #if defined(__APPLE__)
   return float4{simd::normalize(f4.native)};
-#elif
+#elif defined(_WIN32)
   return float4{DirectX::XMVector4Normalize(f4.native)};
 #else
   throw_not_implemented();
