@@ -6,12 +6,12 @@
 //
 #pragma once
 
-#include <cmath>
-
 #include "graphmath/not_implemented.h"
 
-#ifdef __APPLE__
+#if defined(__APPLE__)
 #include <simd/simd.h>
+#else
+#include <array>
 #endif
 
 // Declarations
@@ -60,7 +60,7 @@ struct float3 final {
 #if defined(__APPLE__)
   using native_float3 = simd::float3;
 #else
-  using native_float3 = float[3];
+  using native_float3 = std::array<float, 3>;
 #endif
 
   /// @brief create a `float3` of zeroes
@@ -247,7 +247,7 @@ inline float float3::z() const {
 }
 
 inline float3 float3::operator*(float multiplier) const {
-#if defined(__APPLE__) || defined(_WIN32)
+#if defined(__APPLE__)
   return native * multiplier;
 #else
   throw_not_implemented();
@@ -255,7 +255,7 @@ inline float3 float3::operator*(float multiplier) const {
 }
 
 inline float3 float3::operator*(const float3 &rhs) const {
-#if defined(__APPLE__) || defined(_WIN32)
+#if defined(__APPLE__)
   return native * rhs.native;
 #else
   throw_not_implemented();
@@ -263,7 +263,7 @@ inline float3 float3::operator*(const float3 &rhs) const {
 }
 
 inline float3 float3::operator/(float multiplier) const {
-#if defined(__APPLE__) || defined(_WIN32)
+#if defined(__APPLE__)
   return native / multiplier;
 #else
   throw_not_implemented();
@@ -271,7 +271,7 @@ inline float3 float3::operator/(float multiplier) const {
 }
 
 inline float3 float3::operator+(const float3 &rhs) const {
-#if defined(__APPLE__) || defined(_WIN32)
+#if defined(__APPLE__)
   return native + rhs.native;
 #else
   throw_not_implemented();
@@ -279,7 +279,7 @@ inline float3 float3::operator+(const float3 &rhs) const {
 }
 
 inline float3 float3::operator-(float rhs) const {
-#if defined(__APPLE__) || defined(_WIN32)
+#if defined(__APPLE__)
   return native - rhs;
 #else
   throw_not_implemented();
@@ -287,7 +287,7 @@ inline float3 float3::operator-(float rhs) const {
 }
 
 inline float3 float3::operator-(const float3 &rhs) const {
-#if defined(__APPLE__) || defined(_WIN32)
+#if defined(__APPLE__)
   return native - rhs.native;
 #else
   throw_not_implemented();

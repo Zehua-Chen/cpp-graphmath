@@ -14,6 +14,8 @@
 #include <simd/simd.h>
 #elif defined(_WIN32)
 #include <DirectXMath.h>
+#else
+#include <array>
 #endif
 
 // Declarations
@@ -29,7 +31,7 @@ struct float4 final {
 #elif defined(_WIN32)
   using native_float4 = DirectX::XMVECTOR;
 #else
-  using native_float4 = float[4];
+  using native_float4 = std::array<float, 4>;
 #endif
 
   /// @brief create a `float4` of zeroes
@@ -105,7 +107,6 @@ float4 normalize(const float4 &f4);
 /// @param f4 the `float4`
 /// @returns the magnitude
 float length(const float4 &f4);
-
 
 }  // namespace graphmath
 
