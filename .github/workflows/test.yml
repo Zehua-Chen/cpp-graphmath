@@ -39,7 +39,7 @@ jobs:
       run: cmake \
         -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
         -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake \
-        -DGRAPHMATH_TEST=1 \
+        -DGRAPHMATH_TEST=ON \
         -DVCPKG_MANIFEST_FEATURES=test \
         -S $GITHUB_WORKSPACE
 
