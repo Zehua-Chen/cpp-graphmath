@@ -222,7 +222,19 @@ inline float4 float4::operator*(float rhs) const {
 }
 
 inline bool float4::operator==(const float4 &rhs) const {
+#if defined(__APPLE__)
+  return simd::equal(native, rhs.native);
+#elif defined(_WIN32)
+  using namespace DirectX;
+
+  XMVECTOR comparison = XMVectorEqual(native, rhs.native);
+  return XMVectorGetX(comparison) == 0xFFFFFFFF &&
+         XMVectorGetY(comparison) == 0xFFFFFFFF &&
+         XMVectorGetZ(comparison) == 0xFFFFFFFF &&
+         XMVectorGetW(comparison) == 0xFFFFFFFF;
+#else
   return x() == rhs.x() && y() == rhs.y() && z() == rhs.z() && w() == rhs.w();
+#endif
 }
 
 inline float4 float4::operator*(const float4 &rhs) const {

@@ -301,7 +301,18 @@ inline float3 float3::operator/(float rhs) const {
 }
 
 inline bool float3::operator==(const float3 &rhs) const {
+#if defined(__APPLE__)
+  return simd::equal(native, rhs.native);
+#elif defined(_WIN32)
+  using namespace DirectX;
+
+  XMVECTOR comparison = XMVectorEqual(native, rhs.native);
+  return XMVectorGetX(comparison) == 0xFFFFFFFF &&
+         XMVectorGetY(comparison) == 0xFFFFFFFF &&
+         XMVectorGetZ(comparison) == 0xFFFFFFFF;
+#else
   return x() == rhs.x() && y() == rhs.y() && z() == rhs.z();
+#endif
 }
 
 inline float3 sqrt(const float3 &f3) {
