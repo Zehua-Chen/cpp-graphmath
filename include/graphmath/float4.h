@@ -89,6 +89,11 @@ struct float4 final {
   /// @returns the result
   float4 operator*(const float4 &rhs) const;
 
+  /// @brief Compare with another `float4`
+  /// @param rhs another `float4`
+  /// @returns true if equal; false otherwise
+  bool operator==(const float4 &rhs) const;
+
   native_float4 native;
 };
 
@@ -214,6 +219,10 @@ inline float4 float4::operator*(float rhs) const {
 #else
   throw_not_implemented();
 #endif
+}
+
+inline bool float4::operator==(const float4 &rhs) const {
+  return x() == rhs.x() && y() == rhs.y() && z() == rhs.z() && w() == rhs.w();
 }
 
 inline float4 float4::operator*(const float4 &rhs) const {

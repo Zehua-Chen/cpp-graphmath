@@ -20,6 +20,8 @@ constexpr CharT left_square{'['};
 template <typename CharT>
 constexpr CharT right_square{']'};
 
+}  // namespace print
+
 /// @brief print a `float3` to an out stream
 template <typename CharT>
 std::basic_ostream<CharT> &operator<<(std::basic_ostream<CharT> &out,
@@ -34,13 +36,15 @@ std::basic_ostream<CharT> &operator<<(std::basic_ostream<CharT> &out,
 template <typename CharT>
 std::basic_ostream<CharT> &operator<<(std::basic_ostream<CharT> &out,
                                       const float4x4 &f4x4);
-}  // namespace print
+
 }  // namespace graphmath
 
-namespace graphmath::print {
+namespace graphmath {
 template <typename CharT>
 std::basic_ostream<CharT> &operator<<(std::basic_ostream<CharT> &out,
                                       const float3 &f4) {
+  using namespace print;
+
   out << left_square<CharT>;
   out << f4.x() << comma<CharT> << space<CharT>;
   out << f4.y() << comma<CharT> << space<CharT>;
@@ -52,18 +56,23 @@ std::basic_ostream<CharT> &operator<<(std::basic_ostream<CharT> &out,
 template <typename CharT>
 std::basic_ostream<CharT> &operator<<(std::basic_ostream<CharT> &out,
                                       const float4 &f4) {
+  using namespace print;
+
   out << left_square<CharT>;
   out << f4.x() << comma<CharT> << space<CharT>;
   out << f4.y() << comma<CharT> << space<CharT>;
   out << f4.z() << comma<CharT> << space<CharT>;
   out << f4.w();
   out << right_square<CharT>;
+
   return out;
 }
 
 template <typename CharT>
 std::basic_ostream<CharT> &operator<<(std::basic_ostream<CharT> &out,
                                       const float4x4 &f4x4) {
+  using namespace print;
+
   const auto print_line = [&](size_t y) {
     out << left_square<CharT>;
     out << f4x4.get(y, 0) << comma<CharT> << space<CharT>;
@@ -92,4 +101,4 @@ std::basic_ostream<CharT> &operator<<(std::basic_ostream<CharT> &out,
 
   return out;
 }
-}  // namespace graphmath::print
+}  // namespace graphmath

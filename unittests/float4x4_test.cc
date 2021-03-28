@@ -1,5 +1,6 @@
 #include "graphmath/float4x4.h"
 
+#include "graphmath/print.h"
 #include "gtest/gtest.h"
 
 using namespace graphmath;
@@ -22,11 +23,9 @@ TEST(Float4x4, Identity) {
   float4 vector{1, 2, 3, 4};
 
   float4 result = matrix * vector;
+  float4 expected{1, 2, 3, 4};
 
-  ASSERT_FLOAT_EQ(result.x(), 1);
-  ASSERT_FLOAT_EQ(result.y(), 2);
-  ASSERT_FLOAT_EQ(result.z(), 3);
-  ASSERT_FLOAT_EQ(result.w(), 4);
+  ASSERT_EQ(result, expected);
 }
 
 TEST(Float4x4, MultiplicationByFloat4) {
@@ -34,11 +33,9 @@ TEST(Float4x4, MultiplicationByFloat4) {
                   float4{12, 13, 14, 15}};
   float4 f4{1, 2, 3, 4};
   float4 result = matrix * f4;
+  float4 expected{20, 60, 100, 140};
 
-  ASSERT_FLOAT_EQ(result.x(), 20);
-  ASSERT_FLOAT_EQ(result.y(), 60);
-  ASSERT_FLOAT_EQ(result.z(), 100);
-  ASSERT_FLOAT_EQ(result.w(), 140);
+  ASSERT_EQ(result, expected);
 }
 
 TEST(Float4x4, MultiplicationByFloat4x4) {
