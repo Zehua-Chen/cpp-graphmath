@@ -30,7 +30,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ${{github.workspace}}/build/vcpkg_installed
-        key: ${{ runner.os }}-${{ hashFiles('vcpkg.json', 'CMakeLists.txt') }}
+        key: ${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
 
     - name: Configure CMake
       # Use a bash shell so we can use the same syntax for environment variable
