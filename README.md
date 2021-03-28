@@ -1,4 +1,6 @@
-# Math for Computer Graphics
+# Math for Computer Graphics 
+
+![Test](https://github.com/Zehua-Chen/cpp-graphmath/actions/workflows/test.yml/badge.svg)
 
 All operations are delegated to the platform native math library
 
