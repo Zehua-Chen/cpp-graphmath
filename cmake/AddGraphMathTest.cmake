@@ -27,6 +27,16 @@ function(add_graphmath_test target)
         "-Wall"
         "-Werror")
 
+    # TODO: link with address sanitizer on MSVC
+    target_compile_options(
+      "${target}"
+      PRIVATE
+        "-fsanitize=address")
+
+    target_link_options(
+      "${target}"
+      PRIVATE
+        "-fsanitize=address")
   endif()
 
   gtest_discover_tests("${target}")
