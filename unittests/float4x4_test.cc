@@ -2,6 +2,7 @@
 
 #include "graphmath/print.h"
 #include "gtest/gtest.h"
+#include "helpers.h"
 
 using namespace graphmath;
 
@@ -13,7 +14,7 @@ TEST(Float4x4, Construction) {
 
   for (size_t y = 0; y < 4; y++) {
     for (size_t x = 0; x < 4; x++) {
-      ASSERT_FLOAT_EQ(matrix.get(y, x), counter++);
+      EXPECT_FLOAT_EQ(matrix.get(y, x), counter++);
     }
   }
 }
@@ -25,7 +26,7 @@ TEST(Float4x4, Identity) {
   float4 result = matrix * vector;
   float4 expected{1, 2, 3, 4};
 
-  ASSERT_EQ(result, expected);
+  EXPECT_FLOAT4_EQ(result, expected);
 }
 
 TEST(Float4x4, MultiplicationByFloat4) {
@@ -35,7 +36,7 @@ TEST(Float4x4, MultiplicationByFloat4) {
   float4 result = matrix * f4;
   float4 expected{20, 60, 100, 140};
 
-  ASSERT_EQ(result, expected);
+  EXPECT_FLOAT4_EQ(result, expected);
 }
 
 TEST(Float4x4, MultiplicationByFloat4x4) {
@@ -49,7 +50,7 @@ TEST(Float4x4, MultiplicationByFloat4x4) {
 
   for (size_t y = 0; y < 4; y++) {
     for (size_t x = 0; x < 4; x++) {
-      ASSERT_FLOAT_EQ(result.get(y, x), expected.get(y, x));
+      EXPECT_FLOAT_EQ(result.get(y, x), expected.get(y, x));
     }
   }
 }
@@ -67,7 +68,7 @@ TEST(Float4x4, Transpose) {
 
   for (size_t row = 0; row < 4; row++) {
     for (size_t col = 0; col < 4; col++) {
-      ASSERT_FLOAT_EQ(result.get(row, col), matrix.get(col, row));
+      EXPECT_FLOAT_EQ(result.get(row, col), matrix.get(col, row));
     }
   }
 }
