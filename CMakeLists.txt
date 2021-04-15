@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.9)
+
 option(GRAPHMATH_TEST "Development" OFF)
 
 project("GraphMath")
