@@ -102,10 +102,8 @@ inline float4x4::float4x4(const float4 &row0, const float4 &row1,
   native.columns[2] = col2;
   native.columns[3] = col3;
 #elif defined(_WIN32)
-  native = DirectX::XMMatrixSet(row0.x(), row0.y(), row0.z(), row0.w(),
-                                row1.x(), row1.y(), row1.z(), row1.w(),
-                                row2.x(), row2.y(), row2.z(), row2.w(),
-                                row3.x(), row3.y(), row3.z(), row3.w());
+  native =
+      DirectX::XMMATRIX{row0.native, row1.native, row2.native, row3.native};
 #else
   throw_not_implemented();
 #endif
