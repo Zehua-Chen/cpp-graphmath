@@ -18,6 +18,7 @@
 #endif
 
 namespace graphmath {
+/// @brief error message for a not implemented feature
 constexpr const char *not_implemented_message = "graphmath: not implemented";
 
 #ifdef GRAPHMATH_HAS_EXCEPTIONS
@@ -28,6 +29,8 @@ class not_implemented : public std::exception {
 #endif
 
 /// @brief throw a not implemented exception
+/// When exceptions is enabled, throw `not_implemented`, otherwise
+/// print not_implemented_message and then exit with -1
 void throw_not_implemented();
 }  // namespace graphmath
 
@@ -36,7 +39,7 @@ void throw_not_implemented();
 namespace graphmath {
 #ifdef GRAPHMATH_HAS_EXCEPTIONS
 inline const char *not_implemented::what() const noexcept {
-  return "graphmath: not implemented";
+  return not_implemented_message;
 }
 #endif
 
