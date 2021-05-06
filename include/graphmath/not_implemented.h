@@ -1,7 +1,6 @@
 #pragma once
 
 #include <exception>
-#include <iostream>
 
 // Declarations
 
@@ -15,6 +14,10 @@
 #endif
 #else
 #define GRAPHMATH_HAS_EXCEPTIONS
+#endif
+
+#if !defined(GRAPHMATH_HAS_EXCEPTIONS)
+#include <iostream>
 #endif
 
 namespace graphmath {
