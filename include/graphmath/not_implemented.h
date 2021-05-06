@@ -48,7 +48,7 @@ inline void throw_not_implemented() {
   throw not_implemented{};
 #else
   std::cerr << not_implemented_message << std::endl;
-  std::exit(0);
+  std::exit(-1);
 #endif
 }
 }  // namespace graphmath
