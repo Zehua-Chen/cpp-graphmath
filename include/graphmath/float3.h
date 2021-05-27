@@ -97,6 +97,11 @@ struct float3 final {
   /// @returns true if equal; false otherwise
   bool operator==(const float3 &rhs) const;
 
+  /// @brief Compare `this` with another `float3`
+  /// @param rhs the other `float3`
+  /// @returns false if equal; true otherwise
+  bool operator!=(const float3 &rhs) const;
+
   native_float3 native;
 };
 
@@ -312,6 +317,21 @@ inline bool float3::operator==(const float3 &rhs) const {
          XMVectorGetZ(comparison) == 0xFFFFFFFF;
 #else
   return x() == rhs.x() && y() == rhs.y() && z() == rhs.z();
+#endif
+}
+
+inline bool float3::operator!=(const float3 &rhs) const {
+#if defined(__APPLE__)
+  return !simd::equal(native, rhs.native);
+#elif defined(_WIN32)
+  using namespace DirectX;
+
+  XMVECTOR comparison = XMVectorEqual(native, rhs.native);
+  return !(XMVectorGetX(comparison) == 0xFFFFFFFF &&
+           XMVectorGetY(comparison) == 0xFFFFFFFF &&
+           XMVectorGetZ(comparison) == 0xFFFFFFFF);
+#else
+  return !(x() == rhs.x() && y() == rhs.y() && z() == rhs.z());
 #endif
 }
 
