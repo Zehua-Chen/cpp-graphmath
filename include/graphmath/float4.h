@@ -8,6 +8,7 @@
 
 #include <cmath>
 
+#include "graphmath/float3.h"
 #include "graphmath/not_implemented.h"
 
 #if defined(__APPLE__)
@@ -43,6 +44,11 @@ struct float4 final {
   /// @param z z
   /// @param w w
   float4(float x, float y, float z, float w);
+
+  /// @brief create a `float4` from a `float3`
+  /// @param f3 the float 3
+  /// @param w w
+  float4(const float3 &f3, float w = 1.0f);
 
   /// @brief copy constructor
   /// @param other another `float4`
@@ -100,8 +106,8 @@ struct float4 final {
 /// @brief Compute the dot product of two `float4`
 /// @param a one `float4`
 /// @param b one `float4`
-/// @returns the result `float4`
-float4 dot(const float4 &a, const float4 &b);
+/// @returns the result `float`
+float dot(const float4 &a, const float4 &b);
 
 /// @brief Get a normalized version of `float4`
 /// @param f4 the `float4` to normalize
@@ -143,6 +149,14 @@ inline float4::float4(float x, float y, float z, float w)
   throw_not_implemented();
 }
 #endif
+
+inline float4::float4(const float3 &f3, float w) {
+#if defined(__APPLE__)
+  native = simd::make_float4(f3.native, w);
+#else
+  throw_not_implemented();
+#endif
+}
 
 inline float4::float4(const float4 &other) : native(other.native) {}
 
@@ -247,11 +261,11 @@ inline float4 float4::operator*(const float4 &rhs) const {
 #endif
 }
 
-inline float4 dot(const float4 &a, const float4 &b) {
+inline float dot(const float4 &a, const float4 &b) {
 #if defined(__APPLE__)
-  return float4{simd::dot(a.native, b.native)};
+  return simd::dot(a.native, b.native);
 #elif defined(_WIN32)
-  return float4{DirectX::XMVector4Dot(a.native, b.native)};
+  return DirectX::XMVectorGetX(DirectX::XMVector4Dot(a.native, b.native));
 #else
   throw_not_implemented();
 #endif
